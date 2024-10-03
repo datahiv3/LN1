@@ -8,3 +8,8 @@ const create =
   };
 
 export const LazyHome = create(lazy(() => import("../../screens/Home")));
+export const LazyMyNodes = create(lazy(() => import("../../screens/MyNodes")));
+export const LazyNode = create(lazy(() => import("../../screens/Node")));
+export const LazyCreate = create(lazy(() => import("../../screens/Create")));
+export const LazyFaucet = create(lazy(() => import("../../screens/Faucet")));
+export const LazyNotFound = create(lazy(() => import("../../screens/NotFound")));
