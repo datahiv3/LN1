@@ -1,0 +1,30 @@
+{
+  "name": "contracts",
+  "private": true,
+  "version": "0.1.0",
+  "description": "",
+  "author": {
+    "name": "DataHive",
+    "url": "https://datahive.network/"
+  },
+  "scripts": {
+    "compile": "hardhat compile",
+    "run:testnet": "hardhat run --network opSepolia",
+    "test": ""
+  },
+  "keywords": [],
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "hardhat-abi-exporter": "^2.10.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "eslint": "^9.11.1",
+    "globals": "^15.10.0",
+    "hardhat": "^2.22.12",
+    "prettier": "3.3.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "typescript-eslint": "^8.8.0"
+  }
+}

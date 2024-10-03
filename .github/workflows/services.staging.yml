@@ -1,0 +1,104 @@
+name: DataHive LN1 Staging Services
+
+on:
+  push:
+    branches: [disabled]
+    paths:
+      - "services/**"
+      - ".github/workflows/services.yml"
+      - "services.Dockerfile"
+  workflow_dispatch:
+
+env:
+  CODENAME: sulfureux
+  CLUSTER: sulfureux
+  CURRENT_SERVICE: ln1
+  SERVICE_TYPE: backend
+  NAMESPACE: ln1
+  TAG: ${{ github.run_id }}
+
+jobs:
+  install-build-and-push-job-to-k8s:
+    name: DataHive LN1 Staging Services
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        id: pnpm-install
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        shell: bash
+        working-directory: ./services
+        run: |
+          pnpm --ignore-workspace install
+
+      - name: Build job
+        working-directory: ./services
+        run: |
+          pnpm build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Github Packages
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login ghcr.io -u transflox-deployer --password-stdin
+
+      - name: Login to K8S
+        uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.K8S_CONFIG }}
+
+      - name: Inspect tool
+        run: |-
+          node --version
+          pnpm --version
+          aws --version
+          docker --version
+          kubectl version
+
+      - name: Build and push Job Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: services.Dockerfile
+          push: true
+          tags: ghcr.io/${{ env.CODENAME }}/${{ env.NAMESPACE }}/${{ env.CURRENT_SERVICE }}:latest,ghcr.io/${{ env.CODENAME }}/${{ env.NAMESPACE }}/${{ env.CURRENT_SERVICE }}:${{ env.TAG }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.CODENAME }}/${{ env.NAMESPACE }}/${{ env.CURRENT_SERVICE }}:latest
+          cache-to: type=inline
+
+      - name: Render Deployment YAML
+        uses: nowactions/envsubst@v1
+        with:
+          input: ./services/deployment.yml
+          output: ./services/gen.deployment.yml
+
+      - name: Apply to K8S
+        run: |-
+          kubectl apply -f ./services/gen.deployment.yml
+          kubectl rollout status deployment/${CURRENT_SERVICE} -n ${NAMESPACE}
+          kubectl get services -o wide
