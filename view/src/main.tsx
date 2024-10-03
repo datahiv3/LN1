@@ -1,4 +1,3 @@
-import "@rainbow-me/rainbowkit/styles.css";
 import { createAppKit } from "@reown/appkit";
 import { Buffer } from "buffer";
 import React from "react";
