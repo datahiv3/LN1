@@ -1,0 +1,93 @@
+name: DataHive LN1 Staging View for per Commit
+
+on:
+  push:
+    branches: [wip]
+    paths:
+      - "view/**"
+      - ".github/**"
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-west-1
+  URL: commit-.datahive.p10node.com
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        id: pnpm-install
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-commit.datahive.p10node.com-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-commit.datahive.p10node.com-
+
+      - name: Install dependencies
+        shell: bash
+        working-directory: ./view
+        run: |
+          pnpm --ignore-workspace install
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build Website
+        working-directory: ./view
+        run: pnpm build
+        env:
+          VITE_WC_PROJECT_ID: 785959e994f4aa0df486cb6affa2cb67
+
+      - name: Push data to S3
+        working-directory: ./view
+        run: aws s3 sync dist/ s3://{{ env.URL }}/ --acl public-read
+
+      - uses: kriasoft/create-dns-record@v1
+        with:
+          type: "CNAME"
+          name: "{{ env.URL }}"
+          content: "p10node.com"
+          ttl: 1
+          proxied: true
+          token: ${{ secrets.CLOUDFLARE_TOKEN }}
+          zone: ${{ secrets.CLOUDFLARE_ZONE }}
+
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit:
+            Commit message: ${{ github.event.commits[0].message }}
+
+            Repository: ${{ github.repository }}
+
+            See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+
+            See updates: https://{{ env.URL }}

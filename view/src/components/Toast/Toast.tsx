@@ -16,15 +16,19 @@ const Toast: React.FC<{ isOnboarding?: boolean }> = ({ isOnboarding = false }) =
         case "error":
           toast.error(toastRedux.message);
           break;
+
         case "success":
           toast.success(toastRedux.message, { duration: 1500 });
           break;
+
         case "info":
           toast.success(toastRedux.message);
           break;
+
         default:
           break;
       }
+
       dispatch(setToast(emptyToast));
     }
   });

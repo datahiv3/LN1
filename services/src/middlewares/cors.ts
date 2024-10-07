@@ -1,12 +1,12 @@
 import cors from "@koa/cors";
 import { isProduction, isStaging } from "../config";
 
-const crosProductionDomains = ["datahive.p10node.com"];
+const crosProductionDomains = ["https://datahive.p10node.com"];
 const crosStagingDomains = ["staging-*.datahive.p10node.com"];
 
 const isDev = !isProduction;
 
-const crosDevDomains = ["localhost"];
+const crosDevDomains = ["http://localhost:5173"];
 
 export const corsMiddleware = cors({
   origin: (ctx): string => {

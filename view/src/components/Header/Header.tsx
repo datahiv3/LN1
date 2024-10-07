@@ -1,3 +1,4 @@
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React from "react";
 import { Link } from "react-router-dom";
 import Container from "../Layout/Container";
@@ -16,7 +17,7 @@ const Header: React.FC = () => {
             Faucet
           </Link>
           <div>
-            <w3m-button />
+            <ConnectButton />
           </div>
         </div>
       </Container>

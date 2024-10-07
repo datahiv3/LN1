@@ -13,3 +13,5 @@ export const LazyNode = create(lazy(() => import("../../screens/Node")));
 export const LazyCreate = create(lazy(() => import("../../screens/Create")));
 export const LazyFaucet = create(lazy(() => import("../../screens/Faucet")));
 export const LazyNotFound = create(lazy(() => import("../../screens/NotFound")));
+export const LazyLogin = create(lazy(() => import("../../screens/Login")));
+export const LazyImplement = create(lazy(() => import("../../screens/Implementing")));

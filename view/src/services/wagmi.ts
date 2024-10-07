@@ -1,4 +1,4 @@
-import { CaipNetwork } from "@reown/appkit";
+import { CaipNetwork, createAppKit } from "@reown/appkit";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { getBlockchainApiRpcUrl } from "@reown/appkit/networks";
 
@@ -6,7 +6,7 @@ export const metadata = {
   name: "DataHive",
   description: "",
   url: "https://staging-29c55d.datahive.p10node.com",
-  icons: ["https://avatars.githubusercontent.com/u/179229932"],
+  icons: ["hhttps://avatars.githubusercontent.com/u/180420380"],
 };
 
 const opSepolia: CaipNetwork = {
@@ -25,5 +25,16 @@ export const projectId = import.meta.env.VITE_WC_PROJECT_ID;
 export const wagmiAdapter = new WagmiAdapter({
   networks,
   projectId,
-  ssr: true,
+  ssr: false,
+});
+
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks,
+  projectId,
+  metadata,
+  features: {
+    swaps: false,
+    analytics: true,
+  },
 });

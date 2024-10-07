@@ -1,15 +1,12 @@
-import Koa, { BaseContext } from "koa";
 import Router from "@koa/router";
+import Koa, { BaseContext } from "koa";
 
 declare module "koa" {
   interface BaseContext {
     evmAddress: string;
-    suiAddress: string;
-    seiAddress: string;
 
     isAuth: boolean;
     isAdmin: boolean;
-    isStravaConnected: boolean;
 
     body?: any;
   }

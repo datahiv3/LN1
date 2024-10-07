@@ -4,9 +4,10 @@
 
 The `main` branch will represent the `staging` environment. When a commit is made to this branch, the CI/CD pipeline will deploy to the staging environment.
 
-`releases/*` production with version.
+The `releases/*` branches represent the production environment, with each branch corresponding to a specific version.
 
-`production` production
+The `production` branch represents the `live` production environment for final deployment and will be merged from a specific `releases/*` branch.
+
 
 ## Developements
 
@@ -14,7 +15,7 @@ The `main` branch will represent the `staging` environment. When a commit is mad
 
 - VSCode
 - NodeJS (`v20.17.0`)
-- pnpm (`v9.10.0`)
+- pnpm (`v9.12.0`)
 
 ### Dependencies
 
@@ -51,7 +52,11 @@ pnpm start:view
 pnpm run:view start
 ```
 
-Or `cd` to `view` and run: `pnpm start`
+Or `cd` to `view` and run
+
+```
+pnpm start
+```
 
 ### Server
 
@@ -64,7 +69,11 @@ pnpm start:services
 pnpm run:services start
 ```
 
-Or `cd` to `services` and run: `pnpm start`
+Or `cd` to `services` and run
+
+```
+pnpm start
+```
 
 ## Deployment
 

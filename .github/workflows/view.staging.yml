@@ -2,7 +2,7 @@ name: DataHive LN1 Staging View
 
 on:
   push:
-    branches: [main]
+    branches: [wip]
     paths:
       - "view/**"
       - ".github/**"

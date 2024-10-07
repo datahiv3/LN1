@@ -1,7 +1,7 @@
 import "@nomicfoundation/hardhat-chai-matchers";
+import "@nomicfoundation/hardhat-ethers";
+import "@nomicfoundation/hardhat-ignition-ethers";
 import "@nomicfoundation/hardhat-toolbox";
-import "@nomicfoundation/hardhat-verify";
-import "@nomiclabs/hardhat-ethers";
 import "@openzeppelin/hardhat-upgrades";
 import dotenv from "dotenv";
 import "hardhat-abi-exporter";
@@ -30,6 +30,12 @@ const config: HardhatUserConfig = {
       accounts: [process.env.PRIVATE_KEY!],
       timeout: 2_147_483_647,
     },
+    localhost: {
+      url: "http://127.0.0.1:8545",
+      chainId: 31337,
+      accounts: ["0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"],
+      timeout: 2_147_483_647,
+    },
   },
   abiExporter: {
     path: "abi",
@@ -37,6 +43,9 @@ const config: HardhatUserConfig = {
     flat: true,
     only: [],
     spacing: 2,
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY!,
   },
 };
 

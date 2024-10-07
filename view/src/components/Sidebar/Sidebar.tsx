@@ -1,7 +1,11 @@
+import { useStore } from "@nanostores/react";
 import React from "react";
 import { Link } from "react-router-dom";
+import { isAdmin } from "../../features/auth";
 
 const Sidebar: React.FC = () => {
+  const $isAdmin = useStore(isAdmin);
+
   return (
     <nav className="border-r border-color-[#ddd] lg:w-[320px] py-6">
       <div className="pt-8 flex flex-col justify-between h-[100%]">
@@ -19,9 +23,16 @@ const Sidebar: React.FC = () => {
             <li className="underline">
               <Link to="/my-nodes">+ My Nodes</Link>
             </li>
+            {$isAdmin && (
+              <>
+                <li className="underline">
+                  <Link to="/admin">+ Admin</Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
-        <div>
+        <div className="pt-12">
           <ul>
             <li className="underline">
               <a href="http://datahive.network" target="_blank" rel="noopener noreferrer">

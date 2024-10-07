@@ -4,10 +4,18 @@ import bodyParser from "koa-bodyparser";
 import helmet from "koa-helmet";
 import koaLogger from "koa-pino-logger";
 import { isProduction } from "./config";
+import { ethHealth } from "./controllers/eth/health";
+import { ethIsAdmin } from "./controllers/eth/is-admin";
+import { ethLogout } from "./controllers/eth/logout";
+import { ethGetNonce } from "./controllers/eth/nonce";
+import { ethVerify } from "./controllers/eth/verify";
 import { index } from "./controllers/index";
+import { tokenGetProof } from "./controllers/token/proof";
 import { cronInit } from "./cron/index";
 import { client } from "./db";
+import { auth } from "./middlewares/auth";
 import { cacheMiddleware } from "./middlewares/cache";
+import { recaptchaMiddleware } from "./middlewares/captcha";
 import { corsMiddleware } from "./middlewares/cors";
 import { dateRangeMiddleware } from "./middlewares/dateRange";
 import { evmAdmin } from "./middlewares/evmAdmin";
@@ -28,6 +36,7 @@ app.use(helmet());
 app.use(helmet.hidePoweredBy());
 app.use(corsMiddleware);
 app.use(bodyParser({ formLimit: "50mb" }));
+app.use(auth);
 app.use(evmAdmin);
 
 // db
@@ -42,6 +51,28 @@ router.use(paginationMiddleware);
 
 // root
 router.get("/", index);
+
+// eth
+const eth = new Router({ prefix: "/eth" });
+eth.get("/nonce", ethGetNonce);
+eth.post("/verify", ethVerify);
+eth.post("/health", ethHealth);
+eth.post("/is-admin", ethIsAdmin);
+eth.post("/logout", ethLogout);
+router.use(eth.routes());
+
+// token
+const token = new Router({ prefix: "/token" });
+token.post("/faucet", recaptchaMiddleware, tokenGetProof);
+router.use(token.routes());
+
+// node
+const node = new Router({ prefix: "/node" });
+router.use(node.routes());
+
+// admin
+const admin = new Router({ prefix: "/admin" });
+router.use(admin.routes());
 
 app.use(router.routes());
 app.use(router.allowedMethods());

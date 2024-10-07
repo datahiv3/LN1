@@ -2,7 +2,7 @@ name: DataHive LN1 Staging Services
 
 on:
   push:
-    branches: [disabled]
+    branches: [wip]
     paths:
       - "services/**"
       - ".github/workflows/services.yml"
