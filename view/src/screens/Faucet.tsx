@@ -1,12 +1,13 @@
 import { Button, Input } from "@material-tailwind/react";
+import Alert from "@mui/joy/Alert";
 import React from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useAccount, useWriteContract } from "wagmi";
+import { useAccount, useTransactionConfirmations, useWriteContract } from "wagmi";
 import { useAppDispatch } from "../app/hooks";
 import FormError from "../components/Form/FormError";
+import CentralPage from "../components/Layout/CentralPage";
 import Code from "../components/Layout/Code";
-import DefaultPage from "../components/Layout/DefaultPage";
 import { setToast } from "../components/Toast/toastReducer";
 import { config, contracts } from "../config";
 import { api, getServices } from "../services/api";
@@ -21,7 +22,10 @@ const Faucet: React.FC = () => {
   const account = useAccount();
   const { writeContract } = useWriteContract();
   const dispatch = useAppDispatch();
+  const [tx, setTx] = React.useState<`0x${string}` | undefined>(undefined);
   // const client = useClient();
+
+  const result = useTransactionConfirmations({ hash: tx });
 
   const {
     handleSubmit,
@@ -54,7 +58,9 @@ const Faucet: React.FC = () => {
         args: [response.data.hash, response.data.signature],
       },
       {
-        onSuccess: () => {
+        onSuccess: (res) => {
+          setTx(res);
+
           setIsSuccess(true);
           setLoading(false);
         },
@@ -80,7 +86,7 @@ const Faucet: React.FC = () => {
   };
 
   return (
-    <DefaultPage className="w-[100%] h-[100%] flex items-center justify-center">
+    <CentralPage>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <div>
@@ -127,9 +133,32 @@ const Faucet: React.FC = () => {
             </div>
 
             <div>{loading && <div>Loading...</div>}</div>
+
+            <div>
+              {tx && (
+                <div>
+                  <Alert variant="solid" color="primary">
+                    {result ? "Transaction confirmed!" : "Waiting for confirmation from the blockchain..."}
+                  </Alert>
+
+                  <div className="mt-3">
+                    {result ? (
+                      <>
+                        You have claimed the faucet at transaction hash: <Code copy={tx}>{tx}</Code>
+                      </>
+                    ) : (
+                      <>
+                        You are claiming the faucet at transaction hash: <Code copy={tx}>{tx}</Code>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div>
               {isSuccess && (
-                <div>
+                <div className="mt-12">
                   To see the balance, add <span className="font-bold">DataHive Token Contract</span> Address: <Code copy={contracts.DataHiveToken}>{contracts.DataHiveToken}</Code>{" "}
                   to your Wallet
                   {/* or just{" "}
@@ -160,7 +189,7 @@ const Faucet: React.FC = () => {
           </div>
         </div>
       </form>
-    </DefaultPage>
+    </CentralPage>
   );
 };
 
