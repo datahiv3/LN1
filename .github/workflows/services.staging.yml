@@ -14,7 +14,7 @@ env:
   CLUSTER: sulfureux
   CURRENT_SERVICE: ln1
   SERVICE_TYPE: backend
-  NAMESPACE: datahive-staging
+  NAMESPACE: teol
   TAG: ${{ github.run_id }}
 
 jobs:

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kubectl apply -f ./gen.secrets-datahive-staging.yml
+kubectl apply -f ./gen.secrets-teol.yml

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: datahive
-  namespace: datahive-staging
+  namespace: teol
   labels:
     app: gateway
 spec:

@@ -3,7 +3,7 @@ hash() {
 }
 
 export ENV=$(hash production)
-export NAMESPACE_RAW=datahive-staging
+export NAMESPACE_RAW=teol
 
 export PRODUCTION=$(hash true)
 export STAGE=$(hash "")
