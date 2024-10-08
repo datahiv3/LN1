@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "services/**"
-      - ".github/workflows/services.yml"
+      - ".github/workflows/services.staging.yml"
       - "services.Dockerfile"
   workflow_dispatch:
 

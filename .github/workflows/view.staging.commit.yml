@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "view/**"
-      - ".github/**"
+      - ".github/workflows/view.staging.commit.yml"
   workflow_dispatch:
 
 env:
