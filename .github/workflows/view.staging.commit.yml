@@ -58,9 +58,12 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Create bucket in S3
-        run: |-
-          aws s3api create-bucket --bucket ${{ env.URL }} --region ${{ env.AWS_REGION }} --create-bucket-configuration LocationConstraint=${{ env.AWS_REGION }} --acl public-read
-          aws s3api put-bucket-website --bucket  ${{ env.URL }} --website-configuration '{"ErrorDocument": {"Key": "index.html"},"IndexDocument": {"Suffix": "index.html"}}'
+        run: |
+          aws s3api create-bucket --bucket ${{ env.URL }} --region ${{ env.AWS_REGION }} --create-bucket-configuration LocationConstraint=${{ env.AWS_REGION }}
+          aws s3api put-bucket-ownership-controls --bucket ${{ env.URL }} --ownership-controls '{"Rules": [{"ObjectOwnership": "BucketOwnerPreferred"}]}'
+          aws s3api put-public-access-block --bucket ${{ env.URL }} --public-access-block-configuration BlockPublicAcls=false
+          aws s3api put-bucket-acl --bucket "${{ env.URL }}" --acl public-read
+          aws s3 website s3://${{ env.URL }} --index-document index.html --error-document index.html
 
       - name: Build Website
         working-directory: ./view
@@ -80,7 +83,7 @@ jobs:
         with:
           type: "CNAME"
           name: "${{ env.URL }}"
-          content: "${{ env.URL }}.s3-website-us-west-1.amazonaws.com"
+          content: "${{ env.URL }}.s3-website-${{ env.AWS_REGION }}.amazonaws.com"
           ttl: 1
           proxied: true
           token: ${{ secrets.CLOUDFLARE_TOKEN }}
