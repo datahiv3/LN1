@@ -1,13 +1,15 @@
 import { Button, Input } from "@material-tailwind/react";
-import Alert from "@mui/joy/Alert";
+import { Alert, Card, Stack, Typography } from "@mui/joy";
+import { ethers } from "ethers";
+import _ from "lodash";
 import React from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useAccount, useTransactionConfirmations, useWriteContract } from "wagmi";
+import { useAccount, useBalance, useTransactionConfirmations, useWriteContract } from "wagmi";
 import { useAppDispatch } from "../app/hooks";
 import FormError from "../components/Form/FormError";
-import CentralPage from "../components/Layout/CentralPage";
 import Code from "../components/Layout/Code";
+import DefaultPage from "../components/Layout/DefaultPage";
 import { setToast } from "../components/Toast/toastReducer";
 import { config, contracts } from "../config";
 import { api, getServices } from "../services/api";
@@ -24,6 +26,7 @@ const Faucet: React.FC = () => {
   const dispatch = useAppDispatch();
   const [tx, setTx] = React.useState<`0x${string}` | undefined>(undefined);
   // const client = useClient();
+  const balance = useBalance({ address: account.address });
 
   const result = useTransactionConfirmations({ hash: tx });
 
@@ -86,82 +89,96 @@ const Faucet: React.FC = () => {
   };
 
   return (
-    <CentralPage>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <div>
-            Request the <span className="font-bold">DataHive Token</span>. You can use it to pay fee for the Legalese Node.
-          </div>
-          <div>You can faucet the token up to 5 times every 24 hours.</div>
+    <DefaultPage>
+      <Stack spacing={2}>
+        <Card>
+          <Typography level="title-lg">Step 1: Faucet OP Sepolia</Typography>
+          <Typography level="body-md">
+            <a href="https://docs.optimism.io/builders/tools/build/faucets" target="_blank" rel="noopener noreferrer" className="underline">
+              Faucet OP Sepolia
+            </a>
+            <div>Your OP Sepolia ETH balance: {balance.data?.value ? _.round(parseFloat(ethers.formatEther(balance.data?.value || "")), 6) : "Loading.."}</div>
+          </Typography>
+        </Card>
 
-          <div className="mt-12 flex flex-col gap-3">
-            <div className="flex gap-2">
-              <Input placeholder="Recipient Wallet Address" value={account.address} disabled crossOrigin={undefined} />
-
-              <Button disabled={loading || !captcha} type="submit" placeholder="">
-                Faucet
-              </Button>
-            </div>
-
-            <div>
-              <Controller
-                control={control}
-                name="captcha"
-                rules={{
-                  required: { value: false, message: "Please complete the reCAPTCHA" },
-                }}
-                render={({ field: { onChange } }) => (
-                  <ReCAPTCHA
-                    ref={(e) => {
-                      captchaRef.current = e;
-                    }}
-                    sitekey={config.googleRecaptcha}
-                    onChange={(value) => {
-                      const data = value?.toString() || "";
-
-                      if (data) {
-                        onChange(data);
-                      }
-                    }}
-                  />
-                )}
-              />
-            </div>
-
-            <div>
-              <FormError label={errors.captcha} />
-            </div>
-
-            <div>{loading && <div>Loading...</div>}</div>
-
-            <div>
-              {tx && (
+        <Card>
+          <Typography level="title-lg">Step 2: Request the DataHive Token</Typography>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Typography level="body-md">
+              <div>
                 <div>
-                  <Alert variant="solid" color="primary">
-                    {result ? "Transaction confirmed!" : "Waiting for confirmation from the blockchain..."}
-                  </Alert>
+                  Request the <span className="font-bold">DataHive Token</span>. You can use it to pay fee for the Legalese Node.
+                </div>
+                <div>You can faucet the token up to 5 times every 24 hours.</div>
 
-                  <div className="mt-3">
-                    {result ? (
-                      <>
-                        You have claimed the faucet at transaction hash: <Code copy={tx}>{tx}</Code>
-                      </>
-                    ) : (
-                      <>
-                        You are claiming the faucet at transaction hash: <Code copy={tx}>{tx}</Code>
-                      </>
+                <div className="mt-12 flex flex-col gap-3">
+                  <div className="flex gap-2">
+                    <Input placeholder="Recipient Wallet Address" value={account.address} disabled crossOrigin={undefined} />
+
+                    <Button disabled={loading || !captcha} type="submit" placeholder="">
+                      Faucet
+                    </Button>
+                  </div>
+
+                  <div>
+                    <Controller
+                      control={control}
+                      name="captcha"
+                      rules={{
+                        required: { value: false, message: "Please complete the reCAPTCHA" },
+                      }}
+                      render={({ field: { onChange } }) => (
+                        <ReCAPTCHA
+                          ref={(e) => {
+                            captchaRef.current = e;
+                          }}
+                          sitekey={config.googleRecaptcha}
+                          onChange={(value) => {
+                            const data = value?.toString() || "";
+
+                            if (data) {
+                              onChange(data);
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <FormError label={errors.captcha} />
+                  </div>
+
+                  <div>{loading && <div>Loading...</div>}</div>
+
+                  <div>
+                    {tx && (
+                      <div>
+                        <Alert variant="solid" color="primary">
+                          {result ? "Transaction confirmed!" : "Waiting for confirmation from the blockchain..."}
+                        </Alert>
+
+                        <div className="mt-3">
+                          {result ? (
+                            <>
+                              You have claimed the faucet at transaction hash: <Code copy={tx}>{tx}</Code>
+                            </>
+                          ) : (
+                            <>
+                              You are claiming the faucet at transaction hash: <Code copy={tx}>{tx}</Code>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
-                </div>
-              )}
-            </div>
 
-            <div>
-              {isSuccess && (
-                <div className="mt-12">
-                  To see the balance, add <span className="font-bold">DataHive Token Contract</span> Address: <Code copy={contracts.DataHiveToken}>{contracts.DataHiveToken}</Code>{" "}
-                  to your Wallet
-                  {/* or just{" "}
+                  <div>
+                    {isSuccess && (
+                      <div className="mt-12">
+                        To see the balance, add <span className="font-bold">DataHive Token Contract</span> Address:{" "}
+                        <Code copy={contracts.DataHiveToken}>{contracts.DataHiveToken}</Code> to your Wallet
+                        {/* or just{" "}
                   <span
                     className="underline cursor-pointer"
                     onClick={() => {
@@ -182,14 +199,17 @@ const Faucet: React.FC = () => {
                   >
                     click
                   </span> */}
-                  .
+                        .
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </form>
-    </CentralPage>
+              </div>
+            </Typography>
+          </form>
+        </Card>
+      </Stack>
+    </DefaultPage>
   );
 };
 

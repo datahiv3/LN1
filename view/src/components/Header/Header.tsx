@@ -13,10 +13,6 @@ const Header: React.FC = () => {
           </Link>
         </div>
         <div className="flex gap-6 items-center">
-          <a href="https://docs.optimism.io/builders/tools/build/faucets" target="_blank" rel="noopener noreferrer" className="underline">
-            Faucet OP Sepolia
-          </a>
-
           <Link to="/faucet">Faucet</Link>
           <div>
             <ConnectButton />
