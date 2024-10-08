@@ -2,7 +2,7 @@ name: DataHive LN1 Staging View
 
 on:
   push:
-    branches: [wip]
+    branches: [main]
     paths:
       - "view/**"
       - ".github/**"
@@ -60,7 +60,11 @@ jobs:
         working-directory: ./view
         run: pnpm build
         env:
+          VITE_STAGE: staging
           VITE_WC_PROJECT_ID: 785959e994f4aa0df486cb6affa2cb67
+          VITE_API_URL: https://staging-api.datahive.p10node.com
+          VITE_GOOGLE_GA: ""
+          VITE_GOOGLE_RECAPTCHA: 6LcJxVkqAAAAAG5DDvY843EJHZXY95kuiSMWzDDo
 
       - name: Push data to S3
         working-directory: ./view

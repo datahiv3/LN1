@@ -46,6 +46,8 @@ contract DataHiveToken is
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, msg.sender);
+
+        _pause();
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {
@@ -56,7 +58,7 @@ contract DataHiveToken is
         _unpause();
     }
 
-    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
+    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) whenNotPaused {
         _mint(to, amount);
     }
 

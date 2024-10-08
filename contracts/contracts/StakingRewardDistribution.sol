@@ -34,7 +34,7 @@ contract StakingRewardDistribution is Initializable, AccessControlUpgradeable, P
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(WITHDRAW_ROLE, msg.sender);
 
-        pause();
+        _pause();
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {

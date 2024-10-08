@@ -40,11 +40,49 @@ async function main() {
   const setTestnetFaucet = await registry.connect(deployer).setTestnetFaucet(faucetAddress);
   await setTestnetFaucet.wait();
 
+  // let the faucet mint tokens
+  const setMinter = await token.connect(deployer).grantRole(await token.MINTER_ROLE(), faucetAddress);
+  await setMinter.wait();
+
+  // let the sign contract verify signatures
+  const setSigner = await sign.connect(deployer).setSignerAddress("0x2afDa889eB3fD5a02b3dff4D39c7F5212EdE2AEC");
+  await setSigner.wait();
+
+  // unpause sign
+  const unpauseSign = await sign.connect(deployer).unpause();
+  await unpauseSign.wait();
+
+  // unpause faucet
+  const unpauseFaucet = await faucet.connect(deployer).unpause();
+  await unpauseFaucet.wait();
+
+  // unpause token
+  const unpauseToken = await token.connect(deployer).unpause();
+  await unpauseToken.wait();
+
+  // set registry for faucet
+  const faucetSetRegistry = await faucet.connect(deployer).setRegistryAddress(registryAddress);
+  await faucetSetRegistry.wait();
+
+  // set registry for sign
+  const signSetRegistry = await sign.connect(deployer).setRegistryAddress(registryAddress);
+  await signSetRegistry.wait();
+
+  // transfer 1 ETH Hardhat to 0xe70adf9aE4d5F68E80A8E2C5EA3B916Dd49C6D87
+  const transfer = await deployer.sendTransaction({ to: "0xe70adf9aE4d5F68E80A8E2C5EA3B916Dd49C6D87", value: ethers.parseEther("1") });
+  await transfer.wait();
+
   console.table({
     token: tokenAddress,
     registry: registryAddress,
     sign: signAddress,
     faucet: faucetAddress,
+  });
+
+  console.table({
+    token: await registry.dataHiveTokenAddress(),
+    sign: await registry.signatureVerificationAddress(),
+    faucet: await registry.testnetFaucetAddress(),
   });
 }
 

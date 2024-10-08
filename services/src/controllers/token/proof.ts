@@ -11,10 +11,12 @@ export const tokenGetProof = async (ctx: KoaContext) => {
   }
 
   const signer = await createSigner();
-  const random = randomstring.generate();
-  const message = abi.soliditySHA3(["address", "string"], [ctx.evmAddress, random]);
-  const signature = await signer.signMessage(new Uint8Array(message));
 
-  ctx.body = successResponse({ signature, random });
+  const message = randomstring.generate({ length: 10 });
+  const hash = abi.soliditySHA3(["address", "string"], [ctx.evmAddress, message]);
+
+  const signature = await signer.signMessage(Uint8Array.from(hash));
+
+  ctx.body = successResponse({ signature, hash: message });
   ctx.status = 200;
 };

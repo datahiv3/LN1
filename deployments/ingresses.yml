@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: datahive
+  namespace: datahive-staging
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - host: staging-api.datahive.p10node.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ln1
+                port:
+                  number: 3000

@@ -2,7 +2,7 @@ name: DataHive LN1 Staging View for per Commit
 
 on:
   push:
-    branches: [wip]
+    branches: [main]
     paths:
       - "view/**"
       - ".github/**"
@@ -10,7 +10,7 @@ on:
 
 env:
   AWS_REGION: us-west-1
-  URL: commit-.datahive.p10node.com
+  URL: commit-${{ github.run_id }}.datahive.p10node.com
 
 jobs:
   build:
@@ -57,20 +57,29 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Create bucket in S3
+        run: |-
+          aws s3api create-bucket --bucket ${{ env.URL }} --region ${{ env.AWS_REGION }} --create-bucket-configuration LocationConstraint=${{ env.AWS_REGION }} --acl public-read
+          aws s3api put-bucket-website --bucket  ${{ env.URL }} --website-configuration '{"ErrorDocument": {"Key": "index.html"},"IndexDocument": {"Suffix": "index.html"}}'
+
       - name: Build Website
         working-directory: ./view
         run: pnpm build
         env:
+          VITE_STAGE: staging
           VITE_WC_PROJECT_ID: 785959e994f4aa0df486cb6affa2cb67
+          VITE_API_URL: https://staging-api.datahive.p10node.com
+          VITE_GOOGLE_GA: ""
+          VITE_GOOGLE_RECAPTCHA: 6LcJxVkqAAAAAG5DDvY843EJHZXY95kuiSMWzDDo
 
       - name: Push data to S3
         working-directory: ./view
-        run: aws s3 sync dist/ s3://{{ env.URL }}/ --acl public-read
+        run: aws s3 sync dist/ s3://${{ env.URL }}/ --acl public-read
 
       - uses: kriasoft/create-dns-record@v1
         with:
           type: "CNAME"
-          name: "{{ env.URL }}"
+          name: "${{ env.URL }}"
           content: "p10node.com"
           ttl: 1
           proxied: true
@@ -81,6 +90,7 @@ jobs:
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
+          # -4599568134
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             ${{ github.actor }} created commit:
@@ -90,4 +100,4 @@ jobs:
 
             See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
 
-            See updates: https://{{ env.URL }}
+            See updates: https://${{ env.URL }}

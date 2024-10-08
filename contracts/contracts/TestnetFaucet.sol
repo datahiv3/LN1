@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {RegistryUpgradable} from "./utils/RegistryUpgradable.sol";
 import {WithdrawableUpgradable} from "./utils/WithdrawableUpgradable.sol";
 import {Registry} from "./Registry.sol";
+import {SignatureVerification} from "./utils/SignatureVerification.sol";
 
 /// @custom:security-contact pierre@p10node.com
 contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
@@ -42,7 +43,7 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(WITHDRAW_ROLE, msg.sender);
 
-        pause();
+        _pause();
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {
@@ -75,14 +76,33 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
         _faucet(to, 1);
     }
 
-    function proofFaucet(string memory randomText, bytes memory signature) public {
-        bytes32 messageHash = registry.signatureVerification().getMessageHash(msg.sender, randomText);
-        bytes32 ethSignedMessageHash = registry.signatureVerification().getEthSignedMessageHash(messageHash);
+    function getMessageHash(address sender, string memory randomText) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(sender, randomText));
+    }
 
-        require(registry.signatureVerification().verifyBytesMessageSignature(ethSignedMessageHash, signature), "Invalid signature");
-        require(!usedSignature[signature], "signature already used");
+    function proofFaucet(string memory randomText, bytes memory signature) public whenNotPaused limitedTime {
+        SignatureVerification sign = registry.signatureVerification();
+
+        bytes32 message = getMessageHash(msg.sender, randomText);
+
+        require(sign.verifyBytes(message, signature), "Invalid signature");
+        require(!usedSignature[signature], "Signature already used");
         usedSignature[signature] = true;
 
+        lastFaucet[msg.sender] = block.timestamp;
+        totalFaucet[msg.sender] += 1;
+
         _faucet(msg.sender, 1);
+    }
+
+    modifier limitedTime() {
+        address minter = msg.sender;
+        if (lastFaucet[minter] - firstFaucet[minter] > DAY) {
+            firstFaucet[minter] = block.timestamp;
+            totalFaucet[minter] = 0;
+        }
+
+        require(totalFaucet[minter] < 5, "You can only mint 5 tokens per day");
+        _;
     }
 }

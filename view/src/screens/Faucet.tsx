@@ -3,7 +3,11 @@ import React from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAccount, useWriteContract } from "wagmi";
+import { useAppDispatch } from "../app/hooks";
+import FormError from "../components/Form/FormError";
+import Code from "../components/Layout/Code";
 import DefaultPage from "../components/Layout/DefaultPage";
+import { setToast } from "../components/Toast/toastReducer";
 import { config, contracts } from "../config";
 import { api, getServices } from "../services/api";
 import { ServiceResponse } from "../services/api/types";
@@ -16,6 +20,8 @@ type Faucet = {
 const Faucet: React.FC = () => {
   const account = useAccount();
   const { writeContract } = useWriteContract();
+  const dispatch = useAppDispatch();
+  // const client = useClient();
 
   const {
     handleSubmit,
@@ -24,12 +30,17 @@ const Faucet: React.FC = () => {
     formState: { errors },
   } = useForm<Faucet>();
 
+  const [loading, setLoading] = React.useState(false);
+  const [isSuccess, setIsSuccess] = React.useState(false);
+
   const captchaRef = React.useRef<ReCAPTCHA | null>(null);
 
   const captcha = watch("captcha");
 
   const onSubmit: SubmitHandler<Faucet> = async (data) => {
-    const { data: response } = await api.post<ServiceResponse<{ signature: string; random: string }>>(getServices().token.faucet, {
+    setLoading(true);
+
+    const { data: response } = await api.post<ServiceResponse<{ signature: string; hash: string }>>(getServices().token.faucet, {
       address: account.address,
       ...data,
     });
@@ -38,24 +49,34 @@ const Faucet: React.FC = () => {
     writeContract(
       {
         abi: TestnetFaucetABI,
-        address: contracts.testnetFaucet,
+        address: contracts.TestnetFaucet,
         functionName: "proofFaucet",
-        args: [response.data.random, response.data.signature],
+        args: [response.data.hash, response.data.signature],
       },
       {
         onSuccess: () => {
-          console.log("success");
+          setIsSuccess(true);
+          setLoading(false);
         },
-        onSettled: () => {
-          console.log("settled");
-        },
+
+        onSettled: () => {},
+
         onError: (er) => {
-          console.log(er);
+          setLoading(false);
+
+          console.error(er);
+
+          dispatch(
+            setToast({
+              show: true,
+              title: "",
+              message: er.message.split("\n")?.[0] || er.message,
+              type: "error",
+            }),
+          );
         },
       },
     );
-
-    console.log(response);
   };
 
   return (
@@ -71,7 +92,7 @@ const Faucet: React.FC = () => {
             <div className="flex gap-2">
               <Input placeholder="Recipient Wallet Address" value={account.address} disabled crossOrigin={undefined} />
 
-              <Button disabled={!captcha} type="submit" placeholder="">
+              <Button disabled={loading || !captcha} type="submit" placeholder="">
                 Faucet
               </Button>
             </div>
@@ -81,7 +102,7 @@ const Faucet: React.FC = () => {
                 control={control}
                 name="captcha"
                 rules={{
-                  required: { value: true, message: "Please complete the reCAPTCHA" },
+                  required: { value: false, message: "Please complete the reCAPTCHA" },
                 }}
                 render={({ field: { onChange } }) => (
                   <ReCAPTCHA
@@ -99,6 +120,42 @@ const Faucet: React.FC = () => {
                   />
                 )}
               />
+            </div>
+
+            <div>
+              <FormError label={errors.captcha} />
+            </div>
+
+            <div>{loading && <div>Loading...</div>}</div>
+            <div>
+              {isSuccess && (
+                <div>
+                  To see the balance, add <span className="font-bold">DataHive Token Contract</span> Address: <Code copy={contracts.DataHiveToken}>{contracts.DataHiveToken}</Code>{" "}
+                  to your Wallet
+                  {/* or just{" "}
+                  <span
+                    className="underline cursor-pointer"
+                    onClick={() => {
+                      client?.request({
+                        jsonrpc: "2.0",
+                        id: 1,
+                        method: "wallet_watchAsset",
+                        params: {
+                          type: "ERC20",
+                          options: {
+                            address: contracts.DataHiveToken,
+                            symbol: "DH",
+                            decimals: 18,
+                          },
+                        },
+                      });
+                    }}
+                  >
+                    click
+                  </span> */}
+                  .
+                </div>
+              )}
             </div>
           </div>
         </div>

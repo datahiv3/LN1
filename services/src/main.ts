@@ -10,6 +10,7 @@ import { ethLogout } from "./controllers/eth/logout";
 import { ethGetNonce } from "./controllers/eth/nonce";
 import { ethVerify } from "./controllers/eth/verify";
 import { index } from "./controllers/index";
+import { createNode } from "./controllers/node/create";
 import { tokenGetProof } from "./controllers/token/proof";
 import { cronInit } from "./cron/index";
 import { client } from "./db";
@@ -68,6 +69,7 @@ router.use(token.routes());
 
 // node
 const node = new Router({ prefix: "/node" });
+node.post("/create", createNode);
 router.use(node.routes());
 
 // admin

@@ -2,7 +2,7 @@ name: DataHive LN1 Staging Services
 
 on:
   push:
-    branches: [wip]
+    branches: [main]
     paths:
       - "services/**"
       - ".github/workflows/services.yml"
@@ -10,11 +10,11 @@ on:
   workflow_dispatch:
 
 env:
-  CODENAME: sulfureux
+  CODENAME: datahiv3
   CLUSTER: sulfureux
   CURRENT_SERVICE: ln1
   SERVICE_TYPE: backend
-  NAMESPACE: ln1
+  NAMESPACE: datahive-staging
   TAG: ${{ github.run_id }}
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
 
       - name: Get pnpm store directory
         shell: bash
-        run: |
+        run: |-
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - name: Setup pnpm cache
@@ -53,19 +53,19 @@ jobs:
       - name: Install dependencies
         shell: bash
         working-directory: ./services
-        run: |
+        run: |-
           pnpm --ignore-workspace install
 
       - name: Build job
         working-directory: ./services
-        run: |
+        run: |-
           pnpm build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Login to Github Packages
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login ghcr.io -u transflox-deployer --password-stdin
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login ghcr.io -u p10node-pierre --password-stdin
 
       - name: Login to K8S
         uses: azure/k8s-set-context@v4

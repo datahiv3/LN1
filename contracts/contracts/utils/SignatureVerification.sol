@@ -14,6 +14,7 @@ import {Registry} from "../Registry.sol";
 /// @custom:security-contact pierre@p10node.com
 contract SignatureVerification is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
     Registry public registry;
 
@@ -33,7 +34,18 @@ contract SignatureVerification is Initializable, AccessControlUpgradeable, Pausa
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, msg.sender);
+        _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(WITHDRAW_ROLE, msg.sender);
+
+        _pause();
+    }
+
+    function pause() public onlyRole(PAUSER_ROLE) {
+        _pause();
+    }
+
+    function unpause() public onlyRole(PAUSER_ROLE) {
+        _unpause();
     }
 
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
@@ -60,35 +72,28 @@ contract SignatureVerification is Initializable, AccessControlUpgradeable, Pausa
         }
     }
 
-    function getMessageHash(address sender, string memory randomText) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(sender, randomText));
-    }
-
-    function getEthSignedMessageHash(bytes32 _messageHash) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", _messageHash));
-    }
-
-    function verifySignature(string memory messageStr, bytes memory signature) public view whenNotPaused returns (bool) {
-        bytes32 message = keccak256(abi.encodePacked(messageStr));
-        return verifyBytesMessageSignature(message, signature);
-    }
-
-    function verifyBytesMessageSignature(bytes32 message, bytes memory signature) public view whenNotPaused returns (bool) {
-        bytes32 r;
-        bytes32 s;
-        uint8 v;
-
-        (r, s, v) = splitSignature(signature);
+    function verifySignature(bytes32 hashedMessage, bytes memory signature) public view returns (bool) {
+        (bytes32 r, bytes32 s, uint8 v) = splitSignature(signature);
 
         if (v != 27 && v != 28) {
             return false;
         }
 
-        bytes32 hashedMessage = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", message));
-
         address signer = ecrecover(hashedMessage, v, r, s);
 
         return signer == signerAddress;
+    }
+
+    function verifyMessage(string memory message, bytes memory signature) public view returns (bool) {
+        bytes32 hashedMessage = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n", uintToString(bytes(message).length), message));
+
+        return verifySignature(hashedMessage, signature);
+    }
+
+    function verifyBytes(bytes32 message, bytes memory signature) public view whenNotPaused returns (bool) {
+        bytes32 hashedMessage = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", message));
+
+        return verifySignature(hashedMessage, signature);
     }
 
     function uintToString(uint256 value) internal pure returns (string memory) {
