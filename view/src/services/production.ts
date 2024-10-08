@@ -1,7 +1,7 @@
-import { isProduction } from "../config";
+import { isEnvProduction } from "../config";
 
 export const production = (var1: unknown, var2: unknown) => {
-  if (isProduction) {
+  if (isEnvProduction) {
     return var1;
   }
 

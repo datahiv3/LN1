@@ -1,10 +1,15 @@
 import randomstring from "randomstring";
+import logger from "../utils/log";
 
-export const stage = process.env.STAGE!;
 export const env = process.env.ENV!;
+export const stage = process.env.STAGE!;
+
+export const isEnvProduction = env === "production";
 
 export const isProduction = stage === "production";
-export const isStaging = env === "staging";
+export const isStaging = stage === "staging";
+
+logger.info({ base: "env", env, stage, isProduction, isStaging });
 
 export const mongodbUrl = process.env.MONGODB_URL!;
 

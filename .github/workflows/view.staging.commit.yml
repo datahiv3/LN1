@@ -11,6 +11,7 @@ on:
 env:
   AWS_REGION: us-west-1
   URL: commit-${{ github.run_id }}.datahive.p10node.com
+  CLOUDFLARE_ZONE: p10node.com
 
 jobs:
   build:
@@ -59,7 +60,7 @@ jobs:
 
       - name: Create bucket in S3
         run: |
-          aws s3api create-bucket --bucket ${{ env.URL }} --region ${{ env.AWS_REGION }} --create-bucket-configuration LocationConstraint=${{ env.AWS_REGION }}
+          aws s3api head-bucket --bucket ${{ env.URL }} 2>/dev/null || aws s3api create-bucket --bucket ${{ env.URL }} --region ${{ env.AWS_REGION }} --create-bucket-configuration LocationConstraint=${{ env.AWS_REGION }}
           aws s3api put-bucket-ownership-controls --bucket ${{ env.URL }} --ownership-controls '{"Rules": [{"ObjectOwnership": "BucketOwnerPreferred"}]}'
           aws s3api put-public-access-block --bucket ${{ env.URL }} --public-access-block-configuration BlockPublicAcls=false
           aws s3api put-bucket-acl --bucket "${{ env.URL }}" --acl public-read
@@ -79,7 +80,8 @@ jobs:
         working-directory: ./view
         run: aws s3 sync dist/ s3://${{ env.URL }}/ --acl public-read
 
-      - uses: Jake4-CX/actions-cloudflare-dns@v1.0.0
+      - name: Create CNAME record in Cloudflare
+        uses: opszero/actions-cloudflare-dns@v3.0.2
         with:
           type: "CNAME"
           name: "${{ env.URL }}"
@@ -89,7 +91,7 @@ jobs:
           token: ${{ secrets.CLOUDFLARE_TOKEN }}
           zone: ${{ secrets.CLOUDFLARE_ZONE }}
 
-      - name: send telegram message on push
+      - name: Send telegram message on push
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}

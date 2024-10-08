@@ -7,6 +7,8 @@ export const isProduction = stage === "production";
 export const isDev = stage === "development";
 export const isStaging = stage === "staging";
 
+export const isEnvProduction = isProduction || isStaging;
+
 export const config = { isProduction, googleGA, googleRecaptcha, apiUrl };
 
 export const devContracts: { [key: string]: `0x${string}` } = {
