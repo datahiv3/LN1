@@ -102,9 +102,6 @@ jobs:
             Commit message: ${{ github.event.commits[0].message }}
 
             Repository: https://github.com/${{ github.repository }}
-
             See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
 
-            See commit updates: https://${{ env.URL }} (Please wait 1 minute to initialize TLS HTTPS.)
-
-            Latest staging: https://staging-29c55d.datahive.p10node.com
+            See commit updates: https://${{ env.URL }} (Please wait 30s to initialize TLS HTTPS.)

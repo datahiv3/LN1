@@ -102,3 +102,19 @@ jobs:
           kubectl apply -f ./services/gen.deployment.yml
           kubectl rollout status deployment/${CURRENT_SERVICE} -n ${NAMESPACE}
           kubectl get services -o wide
+
+      - name: Send telegram message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          # -4599568134
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit:
+
+            Commit message: ${{ github.event.commits[0].message }}
+
+            Repository: https://github.com/${{ github.repository }}
+            See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+
+            APIs Updated. https://staging-api.datahive.p10node.com/v1
