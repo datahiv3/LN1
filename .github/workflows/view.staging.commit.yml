@@ -11,7 +11,6 @@ on:
 env:
   AWS_REGION: us-west-1
   URL: commit-${{ github.run_id }}.datahive.p10node.com
-  CLOUDFLARE_ZONE: p10node.com
 
 jobs:
   build:
@@ -99,10 +98,13 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             ${{ github.actor }} created commit:
+
             Commit message: ${{ github.event.commits[0].message }}
 
-            Repository: ${{ github.repository }}
+            Repository: https://github.com/${{ github.repository }}
 
             See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
 
-            See updates: https://${{ env.URL }}
+            See commit updates: https://${{ env.URL }} (Please wait 1 minute to initialize TLS HTTPS.)
+
+            Latest staging: https://staging-29c55d.datahive.p10node.com
