@@ -76,11 +76,11 @@ jobs:
         working-directory: ./view
         run: aws s3 sync dist/ s3://${{ env.URL }}/ --acl public-read
 
-      - uses: kriasoft/create-dns-record@v1
+      - uses: Jake4-CX/actions-cloudflare-dns@v1.0.0
         with:
           type: "CNAME"
           name: "${{ env.URL }}"
-          content: "p10node.com"
+          content: "${{ env.URL }}.s3-website-us-west-1.amazonaws.com"
           ttl: 1
           proxied: true
           token: ${{ secrets.CLOUDFLARE_TOKEN }}
