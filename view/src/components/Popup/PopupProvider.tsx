@@ -1,5 +1,7 @@
-import React, { createContext, PropsWithChildren, useContext, useRef, useState } from "react";
+import type React from "react";
+import { type PropsWithChildren, createContext, useContext, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useKeyWithClickEvents } from "../../hooks/useKeyWithClickEvents";
 
 export const PopupContext = createContext<{
   addPopup: PopupType;
@@ -11,7 +13,7 @@ export const PopupContext = createContext<{
   removeAll: () => {},
 });
 
-type PopupType = (props: { Component: React.FC<{ data?: any }>; callback?: (key: string) => void; removeCallback?: () => void; closeWhenClickOutside?: boolean }) => string;
+type PopupType = (props: { Component: React.FC<{ data?: unknown }>; callback?: (key: string) => void; removeCallback?: () => void; closeWhenClickOutside?: boolean }) => string;
 
 export const usePopups = () => {
   const { addPopup, removePopup, removeAll } = useContext(PopupContext);
@@ -20,7 +22,7 @@ export const usePopups = () => {
 
 const { Provider } = PopupContext;
 
-const PopupProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
+const PopupProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [popups, changePopups] = useState<{ key: string; Component: React.FC; closeWhenClickOutside?: boolean }[]>([]);
   const popupBackgroundService = useRef<HTMLDivElement | null>(null);
 
@@ -46,24 +48,23 @@ const PopupProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   const Component = popups.length > 0 ? popups[popups.length - 1].Component : () => <></>;
 
+  const eventHandlers = useKeyWithClickEvents((e: React.SyntheticEvent) => {
+    if (e.target !== popupBackgroundService.current) {
+      return;
+    }
+    if (popups[popups.length - 1].closeWhenClickOutside === false) return;
+    removePopup(popups[popups.length - 1].key);
+  });
+
   return (
     <Provider value={{ addPopup, removePopup, removeAll }}>
       {children}
       {popups.length > 0 && (
-        <div
-          className="fixed z-40 inset-0 overflow-y-auto"
-          onClick={(e) => {
-            if (e.target !== popupBackgroundService.current) {
-              return;
-            }
-            if (popups[popups.length - 1].closeWhenClickOutside === false) return;
-            removePopup(popups[popups.length - 1].key);
-          }}
-        >
+        <div className="fixed z-40 inset-0 overflow-y-auto" {...eventHandlers}>
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
               {/* background */}
-              <div ref={popupBackgroundService} className="absolute inset-0 popup-background"></div>
+              <div ref={popupBackgroundService} className="absolute inset-0 popup-background" />
             </div>
             <span className="sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
               &#8203;

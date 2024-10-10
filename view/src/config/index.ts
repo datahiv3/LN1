@@ -1,7 +1,7 @@
-const stage = import.meta.env.VITE_STAGE! as string;
-const googleGA = import.meta.env.VITE_GOOGLE_GA! as string;
-const googleRecaptcha = import.meta.env.VITE_GOOGLE_RECAPTCHA! as string;
-const apiUrl = import.meta.env.VITE_API_URL! as string;
+const stage = import.meta.env.VITE_STAGE as string;
+const googleGA = import.meta.env.VITE_GOOGLE_GA as string;
+const googleRecaptcha = import.meta.env.VITE_GOOGLE_RECAPTCHA as string;
+const apiUrl = import.meta.env.VITE_API_URL as string;
 
 export const isProduction = stage === "production";
 export const isDev = stage === "development";

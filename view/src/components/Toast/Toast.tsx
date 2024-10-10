@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/hooks";
-import { RootState } from "../../app/store";
+import type { RootState } from "../../app/store";
 import { emptyToast, setToast } from "./toastReducer";
 
 const Toast: React.FC<{ isOnboarding?: boolean }> = ({ isOnboarding = false }) => {

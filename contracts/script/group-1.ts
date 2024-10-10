@@ -1,5 +1,5 @@
 import { ethers, upgrades } from "hardhat";
-import { DataHiveToken, Registry, SignatureVerification, TestnetFaucet } from "../typechain-types";
+import type { DataHiveToken, Registry, SignatureVerification, TestnetFaucet } from "../typechain-types";
 
 async function main() {
   const [deployer] = await ethers.getSigners();

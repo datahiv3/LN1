@@ -50,7 +50,6 @@
     "wagmi": "^2.12.17"
   },
   "devDependencies": {
-    "@eslint/js": "^9.12.0",
     "@types/lodash": "^4.17.10",
     "@types/react": "^18.3.11",
     "@types/react-copy-to-clipboard": "^5.0.7",
@@ -60,16 +59,10 @@
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react-swc": "^3.7.1",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.12.0",
-    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
-    "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.10.0",
-    "prettier": "3.3.3",
-    "prettier-plugin-organize-imports": "^4.1.0",
     "sass-embedded": "^1.79.4",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
-    "typescript-eslint": "^8.8.0",
     "vite": "^5.4.8"
   }
 }

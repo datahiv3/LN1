@@ -1,10 +1,11 @@
 import { useStore } from "@nanostores/react";
-import React, { PropsWithChildren, useEffect } from "react";
+import type React from "react";
+import { type PropsWithChildren, useEffect } from "react";
 import { useAccountEffect } from "wagmi";
 import { authStatus, isAdmin, token } from "../../features/auth";
 import { api, createServices, setToken } from "../../services/api";
 import { createServiceHosts } from "../../services/api/create";
-import { ServiceResponse } from "../../services/api/types";
+import type { ServiceResponse } from "../../services/api/types";
 import { signOut } from "../../services/eth/authenticationAdapter";
 
 const AppState: React.FC<PropsWithChildren> = ({ children }) => {

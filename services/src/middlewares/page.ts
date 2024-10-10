@@ -1,8 +1,9 @@
-import Koa from "koa";
-import { KoaContext } from "../global";
+import type Koa from "koa";
+import type { KoaContext } from "../global";
 
 export const paginationMiddleware = async (ctx: KoaContext, next: Koa.Next) => {
-  let page = Number(ctx.query["page"] || 1);
+  let page = Number(ctx.query.page || 1);
+  // biome-ignore lint/suspicious/noGlobalIsNan: <explanation>
   if (isNaN(page)) {
     page = 1;
   }
@@ -10,7 +11,8 @@ export const paginationMiddleware = async (ctx: KoaContext, next: Koa.Next) => {
     page = 1;
   }
 
-  let limit = Number(ctx.query["limit"] || 50);
+  let limit = Number(ctx.query.limit || 50);
+  // biome-ignore lint/suspicious/noGlobalIsNan: <explanation>
   if (isNaN(limit)) {
     limit = 50;
   }

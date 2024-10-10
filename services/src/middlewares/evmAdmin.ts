@@ -1,4 +1,4 @@
-import { KoaContext, KoaNext } from "../global";
+import type { KoaContext, KoaNext } from "../global";
 import { isAdmin } from "../utils/isAdmin";
 
 export const evmAdmin = async (ctx: KoaContext, next: KoaNext) => {

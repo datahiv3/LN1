@@ -1,4 +1,4 @@
-import { AuthenticationStatus } from "@rainbow-me/rainbowkit";
+import type { AuthenticationStatus } from "@rainbow-me/rainbowkit";
 import { atom, computed } from "nanostores";
 import LocalStorage from "../services/localStorage";
 

@@ -14,6 +14,7 @@ import {Registry} from "./Registry.sol";
 contract StakingRewardDistribution is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
+    bytes32 public constant DISTRIBUTOR_ROLE = keccak256("STAKING_ADMIN_ROLE");
 
     Registry public registry;
 

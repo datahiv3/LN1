@@ -1,5 +1,5 @@
+import type { Document } from "mongodb";
 import { client } from "./index";
-import { Document } from "mongodb";
 
 export const dbCollection = async <T extends Document>(databaseName: string, collectionName: string) => {
   const db = client.db(databaseName);
@@ -22,7 +22,7 @@ export const dbCreateTimeCollection = async <T extends Document>(databaseName: s
         granularity: "seconds",
       },
     });
-  } else {
-    return db.collection<T>(collectionName);
   }
+
+  return db.collection<T>(collectionName);
 };

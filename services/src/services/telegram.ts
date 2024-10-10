@@ -1,11 +1,11 @@
-import { Context, Telegraf } from "telegraf";
-import { Update } from "telegraf/typings/core/types/typegram";
+import { type Context, Telegraf } from "telegraf";
+import type { Update } from "telegraf/typings/core/types/typegram";
 import { isProduction } from "../config";
 import logger from "../utils/log";
 
 class TelegramBot {
   public bot: Telegraf;
-  public isProduction: boolean = false;
+  public isProduction = false;
   public name: string;
   public defaultChat: number;
 

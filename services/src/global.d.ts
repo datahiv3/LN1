@@ -1,14 +1,15 @@
-import Router from "@koa/router";
-import Koa, { BaseContext } from "koa";
+import type Router from "@koa/router";
+import type Koa from "koa";
+import type { BaseContext } from "koa";
 
 declare module "koa" {
-  interface BaseContext {
+  interface BaseContext<ResponseBodyT> {
     evmAddress: string;
 
     isAuth: boolean;
     isAdmin: boolean;
 
-    body?: any;
+    body?: ResponseBodyT;
   }
 }
 

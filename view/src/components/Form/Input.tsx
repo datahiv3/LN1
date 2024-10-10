@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 const Input: React.FC = () => {
   return <input type="text" />;

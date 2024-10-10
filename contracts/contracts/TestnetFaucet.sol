@@ -26,6 +26,8 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
 
     mapping(bytes => bool) public usedSignature;
 
+    event Faucet(address indexed account, uint256 amount);
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -74,10 +76,8 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
 
     function faucet(address to) public onlyRole(DEFAULT_ADMIN_ROLE) {
         _faucet(to, 1);
-    }
 
-    function getMessageHash(address sender, string memory randomText) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(sender, randomText));
+        emit Faucet(to, 1);
     }
 
     function proofFaucet(string memory randomText, bytes memory signature) public whenNotPaused limitedTime {
@@ -93,6 +93,8 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
         totalFaucet[msg.sender] += 1;
 
         _faucet(msg.sender, 1);
+
+        emit Faucet(msg.sender, 1);
     }
 
     modifier limitedTime() {
@@ -102,7 +104,12 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
             totalFaucet[minter] = 0;
         }
 
-        require(totalFaucet[minter] < 5, "You can only mint 5 tokens per day");
+        // max = 4 because the first mint is at 0
+        require(totalFaucet[minter] < (5 - 1), "You can only mint 5 tokens per day");
         _;
+    }
+
+    function getMessageHash(address sender, string memory randomText) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(sender, randomText));
     }
 }

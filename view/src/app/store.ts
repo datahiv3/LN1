@@ -1,4 +1,4 @@
-import { Action, ThunkAction, configureStore } from "@reduxjs/toolkit";
+import { type Action, type ThunkAction, configureStore } from "@reduxjs/toolkit";
 import toastReducer from "../components/Toast/toastReducer";
 
 export const store = configureStore({

@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import React from "react";
+import type React from "react";
 import { Link } from "react-router-dom";
 import { isAdmin } from "../../features/auth";
 
@@ -24,11 +24,9 @@ const Sidebar: React.FC = () => {
               <Link to="/my-nodes">+ My Nodes</Link>
             </li>
             {$isAdmin && (
-              <>
-                <li className="underline">
-                  <Link to="/admin">+ Admin</Link>
-                </li>
-              </>
+              <li className="underline">
+                <Link to="/admin">+ Admin</Link>
+              </li>
             )}
           </ul>
         </div>

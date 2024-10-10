@@ -1,4 +1,4 @@
-import { KoaContext } from "../global";
+import type { KoaContext } from "../global";
 import { errorResponse } from "../services/response";
 
 export const notFound = async (ctx: KoaContext) => {

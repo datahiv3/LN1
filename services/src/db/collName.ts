@@ -1,4 +1,4 @@
-import { Db } from "mongodb";
+import type { Db } from "mongodb";
 import { client } from ".";
 
 export const createDBCollName = (prefix: string, name: string) => {
@@ -18,7 +18,7 @@ export class DbModel {
     return createDBCollName(this.databaseName, collectionName);
   }
 
-  public async createCollection<T>(collectionName: string, isTimeSeries: boolean = false) {
+  public async createCollection<T>(collectionName: string, isTimeSeries = false) {
     if (isTimeSeries) {
       const collections = await this.db.listCollections({ name: collectionName }, { nameOnly: true }).toArray();
       const existed = collections.some((name) => name.name === collectionName);
@@ -31,9 +31,9 @@ export class DbModel {
             granularity: "seconds",
           },
         });
-      } else {
-        return this.db.collection<T>(collectionName);
       }
+
+      return this.db.collection<T>(collectionName);
     }
 
     const collection = this.db.collection<T>(this.createCollectionName(collectionName));

@@ -94,12 +94,12 @@ jobs:
       - name: Render Deployment YAML
         uses: nowactions/envsubst@v1
         with:
-          input: ./services/deployment.yml
-          output: ./services/gen.deployment.yml
+          input: ./services/deployment.yaml
+          output: ./services/gen.deployment.yaml
 
       - name: Apply to K8S
         run: |-
-          kubectl apply -f ./services/gen.deployment.yml
+          kubectl apply -f ./services/gen.deployment.yaml
           kubectl rollout status deployment/${CURRENT_SERVICE} -n ${NAMESPACE}
           kubectl get services -o wide
 

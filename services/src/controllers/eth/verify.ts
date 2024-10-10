@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { SiweMessage } from "siwe";
 import { jwtSecret } from "../../config";
-import { KoaContext } from "../../global";
+import type { KoaContext } from "../../global";
 import { errorResponse, successResponse } from "../../services/response";
 import { isAdmin } from "../../utils/isAdmin";
 
@@ -12,7 +12,7 @@ interface Message {
 export const ethVerify = async (ctx: KoaContext) => {
   const { message, signature } = ctx.request.body as { message: Message; signature: string };
 
-  let data;
+  let data: SiweMessage;
 
   try {
     const SIWEObject = new SiweMessage(message);

@@ -1,16 +1,15 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import React from "react";
-import CentralPage from "../components/Layout/CentralPage";
+import type React from "react";
+import DefaultPage from "../components/Layout/DefaultPage";
 
 const Login: React.FC = () => {
   return (
-    <CentralPage>
+    <DefaultPage>
       <div>You need to connect your wallet to access this page</div>
-
-      <div>
+      <div className="mt-2">
         <ConnectButton />
       </div>
-    </CentralPage>
+    </DefaultPage>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import CentralPage from "../components/Layout/CentralPage";
 
 const Implementing: React.FC = () => {

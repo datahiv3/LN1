@@ -1,10 +1,12 @@
 import { useStore } from "@nanostores/react";
-import React, { PropsWithChildren, useEffect } from "react";
+import type React from "react";
+import { type PropsWithChildren, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { authStatus, isAdmin } from "../../features/auth";
+import AdminLayout from "../Layout/AdminLayout";
 
-const RequireAdmin: React.FC<PropsWithChildren> = ({ children }) => {
+const RequireAdmin: React.FC<PropsWithChildren> = () => {
   const navigate = useNavigate();
   const $authStatus = useStore(authStatus);
   const account = useAccount();
@@ -21,7 +23,7 @@ const RequireAdmin: React.FC<PropsWithChildren> = ({ children }) => {
     }
   }, [$authStatus, $isAdmin, account.status, navigate]);
 
-  return <>{children}</>;
+  return <AdminLayout />;
 };
 
 export default RequireAdmin;

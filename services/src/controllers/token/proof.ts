@@ -1,6 +1,6 @@
 import abi from "ethereumjs-abi";
 import randomstring from "randomstring";
-import { KoaContext } from "../../global";
+import type { KoaContext } from "../../global";
 import { createSigner } from "../../services/eth/createSigner";
 import { successResponse } from "../../services/response";
 

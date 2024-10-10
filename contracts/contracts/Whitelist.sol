@@ -14,8 +14,13 @@ import {Registry} from "./Registry.sol";
 contract Whitelist is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
+    bytes32 public constant WHITELIST_ROLE = keccak256("WHITELIST_ROLE");
 
     Registry public registry;
+
+    mapping(address => bool) public whitelist;
+
+    event Whitelisted(address indexed account, bool whitelisted);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -33,6 +38,7 @@ contract Whitelist is Initializable, AccessControlUpgradeable, PausableUpgradeab
         _grantRole(UPGRADER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(WITHDRAW_ROLE, msg.sender);
+        _grantRole(WHITELIST_ROLE, msg.sender);
 
         _pause();
     }
@@ -57,5 +63,19 @@ contract Whitelist is Initializable, AccessControlUpgradeable, PausableUpgradeab
 
     function withdraw() public onlyRole(WITHDRAW_ROLE) {
         withdrawERC20(registry.dataHiveTokenAddress());
+    }
+
+    function isWhitelisted(address account) public view returns (bool) {
+        return whitelist[account];
+    }
+
+    function addWhitelist(address account) public onlyRole(WHITELIST_ROLE) {
+        whitelist[account] = true;
+        emit Whitelisted(account, true);
+    }
+
+    function removeWhitelist(address account) public onlyRole(WHITELIST_ROLE) {
+        whitelist[account] = false;
+        emit Whitelisted(account, false);
     }
 }

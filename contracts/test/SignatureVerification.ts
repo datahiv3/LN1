@@ -1,10 +1,10 @@
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@nomicfoundation/hardhat-ethers";
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
+import type { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 import { expect } from "chai";
 import abi from "ethereumjs-abi";
 import { ethers, upgrades } from "hardhat";
-import { SignatureVerification } from "../typechain-types";
+import type { SignatureVerification } from "../typechain-types";
 
 describe("Group1", () => {
   let deployer: HardhatEthersSigner;

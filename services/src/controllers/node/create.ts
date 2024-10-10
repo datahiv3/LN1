@@ -1,4 +1,4 @@
-import { KoaContext } from "../../global";
+import type { KoaContext } from "../../global";
 import { successResponse } from "../../services/response";
 
 export const createNode = async (ctx: KoaContext) => {

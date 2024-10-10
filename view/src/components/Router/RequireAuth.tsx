@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/react";
-import React, { PropsWithChildren, useEffect } from "react";
+import React, { type PropsWithChildren, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { authStatus } from "../../features/auth";

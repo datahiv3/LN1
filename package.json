@@ -11,18 +11,14 @@
     "start:view": "pnpm --filter view run start",
     "start:services": "pnpm --filter services run start",
     "run:view": "pnpm --filter view run",
-    "run:services": "pnpm --filter services run"
+    "run:services": "pnpm --filter services run",
+    "lint": "biome check --write"
   },
   "keywords": [],
-  "dependencies": {},
   "devDependencies": {
-    "@eslint/js": "^9.12.0",
-    "eslint": "^9.12.0",
+    "@biomejs/biome": "1.9.3",
     "globals": "^15.10.0",
-    "typescript-eslint": "^8.8.0",
-    "lerna": "^8.1.8",
-    "prettier": "3.3.3",
-    "prettier-plugin-organize-imports": "^4.1.0"
+    "lerna": "^8.1.8"
   },
   "packageManager": "pnpm@9.12.0"
 }

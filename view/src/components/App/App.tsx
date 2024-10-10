@@ -1,8 +1,8 @@
 import { ThemeProvider } from "@material-tailwind/react";
 import { useStore } from "@nanostores/react";
-import { getDefaultConfig, RainbowKitAuthenticationProvider, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { RainbowKitAuthenticationProvider, RainbowKitProvider, getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React from "react";
+import type React from "react";
 import { WagmiProvider } from "wagmi";
 import { hardhat, optimismSepolia } from "wagmi/chains";
 import { isDev } from "../../config";

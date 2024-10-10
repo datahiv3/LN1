@@ -1,4 +1,4 @@
-import { CaipNetwork, createAppKit } from "@reown/appkit";
+import { type CaipNetwork, createAppKit } from "@reown/appkit";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { getBlockchainApiRpcUrl } from "@reown/appkit/networks";
 

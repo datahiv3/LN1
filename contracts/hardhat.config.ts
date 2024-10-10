@@ -5,9 +5,9 @@ import "@nomicfoundation/hardhat-toolbox";
 import "@openzeppelin/hardhat-upgrades";
 import dotenv from "dotenv";
 import "hardhat-abi-exporter";
-import { HardhatUserConfig } from "hardhat/config";
+import type { HardhatUserConfig } from "hardhat/config";
 
-dotenv.config({ path: __dirname + "/.env" });
+dotenv.config({ path: `${__dirname}/.env` });
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -27,7 +27,7 @@ const config: HardhatUserConfig = {
   networks: {
     opSepolia: {
       url: "https://sepolia.optimism.io",
-      accounts: [process.env.PRIVATE_KEY!],
+      accounts: [process.env.PRIVATE_KEY as string],
       timeout: 2_147_483_647,
     },
     localhost: {
@@ -45,7 +45,7 @@ const config: HardhatUserConfig = {
     spacing: 2,
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY!,
+    apiKey: process.env.ETHERSCAN_API_KEY as string,
   },
 };
 

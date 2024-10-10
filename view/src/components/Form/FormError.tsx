@@ -1,6 +1,6 @@
 import Alert from "@mui/joy/Alert";
-import React from "react";
-import { FieldError } from "react-hook-form";
+import type React from "react";
+import type { FieldError } from "react-hook-form";
 
 const FormError: React.FC<{ label?: FieldError }> = ({ label }) => {
   if (!label) return null;

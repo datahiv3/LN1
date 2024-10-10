@@ -10,12 +10,12 @@ export const cronInit = () => {
   }
 
   // monitor
-  const monitor = createCron(`0/15 * * * * *`, function () {
-    logger.info({ thread: "cron", type: `Monitor every 15 seconds` });
+  const monitor = createCron("0/15 * * * * *", () => {
+    logger.info({ thread: "cron", type: "Monitor every 15 seconds" });
     try {
       initMonitor();
     } catch (e) {
-      logger.info({ thread: "cron", type: `Monitor every 15 seconds`, error: e });
+      logger.info({ thread: "cron", type: "Monitor every 15 seconds", error: e });
     }
   });
 

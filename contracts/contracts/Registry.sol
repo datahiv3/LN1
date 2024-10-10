@@ -61,6 +61,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     function setGeneral(
         address payable _dataHiveTokenAddress,
         address payable _signatureVerificationAddress,
+        address payable _whitelistAddress,
         address payable _nodeFeeManagerAddress,
         address payable _nodeStakingAddress,
         address payable _stakingRewardDistributionAddress,
@@ -78,6 +79,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
         dataHiveToken = DataHiveToken(_dataHiveTokenAddress);
         signatureVerification = SignatureVerification(_signatureVerificationAddress);
 
+        whitelist = Whitelist(_whitelistAddress);
         nodeFeeManager = NodeFeeManager(_nodeFeeManagerAddress);
         nodeStaking = NodeStaking(_nodeStakingAddress);
         stakingRewardDistribution = StakingRewardDistribution(_stakingRewardDistributionAddress);

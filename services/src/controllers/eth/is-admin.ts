@@ -1,4 +1,4 @@
-import { KoaContext } from "../../global";
+import type { KoaContext } from "../../global";
 import { errorResponse, successResponse } from "../../services/response";
 
 export const ethIsAdmin = async (ctx: KoaContext) => {

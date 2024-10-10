@@ -1,4 +1,4 @@
-import { Hosts } from "./types";
+import type { Hosts } from "./types";
 
 let serviceHosts: Hosts = {
   eth: "/v1/eth",
@@ -9,5 +9,7 @@ let serviceHosts: Hosts = {
 
 export const serviceKeys = ["eth", "token", "node", "admin"];
 
-export const setServiceHosts = (hosts: Hosts) => (serviceHosts = hosts);
+export const setServiceHosts = (hosts: Hosts) => {
+  serviceHosts = hosts;
+};
 export const getServiceHosts = () => serviceHosts;

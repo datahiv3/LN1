@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import _ from "lodash";
 import React from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { useAccount, useBalance, useTransactionConfirmations, useWriteContract } from "wagmi";
 import { useAppDispatch } from "../app/hooks";
 import FormError from "../components/Form/FormError";
@@ -13,7 +13,7 @@ import DefaultPage from "../components/Layout/DefaultPage";
 import { setToast } from "../components/Toast/toastReducer";
 import { config, contracts } from "../config";
 import { api, getServices } from "../services/api";
-import { ServiceResponse } from "../services/api/types";
+import type { ServiceResponse } from "../services/api/types";
 import TestnetFaucetABI from "../services/eth/abi/TestnetFaucet.json";
 
 type Faucet = {
@@ -25,7 +25,6 @@ const Faucet: React.FC = () => {
   const { writeContract } = useWriteContract();
   const dispatch = useAppDispatch();
   const [tx, setTx] = React.useState<`0x${string}` | undefined>(undefined);
-  // const client = useClient();
   const balance = useBalance({ address: account.address });
 
   const result = useTransactionConfirmations({ hash: tx });
@@ -97,7 +96,7 @@ const Faucet: React.FC = () => {
             <a href="https://docs.optimism.io/builders/tools/build/faucets" target="_blank" rel="noopener noreferrer" className="underline">
               Faucet OP Sepolia
             </a>
-            <div>Your OP Sepolia ETH balance: {balance.data?.value ? _.round(parseFloat(ethers.formatEther(balance.data?.value || "")), 6) : "Loading.."}</div>
+            <div>Your OP Sepolia ETH balance: {balance.data?.value ? _.round(Number.parseFloat(ethers.formatEther(balance.data?.value || "")), 6) : "Loading.."}</div>
           </Typography>
         </Card>
 
@@ -125,7 +124,7 @@ const Faucet: React.FC = () => {
                       control={control}
                       name="captcha"
                       rules={{
-                        required: { value: false, message: "Please complete the reCAPTCHA" },
+                        required: { value: true, message: "Please complete the reCAPTCHA" },
                       }}
                       render={({ field: { onChange } }) => (
                         <ReCAPTCHA

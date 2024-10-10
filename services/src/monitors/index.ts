@@ -1,4 +1,4 @@
-import net from "net";
+import net from "node:net";
 import monitorLogsColl from "../models/monitor__log";
 
 type MonitorServer = {

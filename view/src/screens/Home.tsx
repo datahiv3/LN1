@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import Banner from "../components/Home/Banner";
 import Container from "../components/Layout/Container";
 

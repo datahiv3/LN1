@@ -1,6 +1,6 @@
 import { isEnvProduction } from "../config";
 
-export const production = (var1: any, var2: any) => {
+export const production = <T>(var1: T, var2: T) => {
   if (isEnvProduction) {
     return var1;
   }

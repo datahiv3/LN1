@@ -1,5 +1,7 @@
 # Deploy
 
+## With Ignition ()
+
 ```bash
 pnpm deploy:local ./ignition/modules/DataHiveToken.ts
 pnpm deploy:local ./ignition/modules/Registry.ts

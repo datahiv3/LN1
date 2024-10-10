@@ -11,9 +11,17 @@ import {WithdrawableUpgradable} from "./utils/WithdrawableUpgradable.sol";
 import {Registry} from "./Registry.sol";
 
 /// @custom:security-contact pierre@p10node.com
-contract NodeStaking is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
+contract NodeStaking is
+    Initializable,
+    AccessControlUpgradeable,
+    PausableUpgradeable,
+    RegistryUpgradable,
+    WithdrawableUpgradable,
+    UUPSUpgradeable
+{
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
+    bytes32 public constant STAKER_ROLE = keccak256("STAKING_ADMIN_ROLE");
 
     Registry public registry;
 
@@ -33,6 +41,7 @@ contract NodeStaking is Initializable, AccessControlUpgradeable, PausableUpgrade
         _grantRole(UPGRADER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(WITHDRAW_ROLE, msg.sender);
+        _grantRole(STAKER_ROLE, msg.sender);
 
         _pause();
     }
@@ -45,9 +54,15 @@ contract NodeStaking is Initializable, AccessControlUpgradeable, PausableUpgrade
         _unpause();
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
-    function _authorizeRegistry() internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeRegistry()
+        internal
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {}
 
     function setRegistry(address _registryAddress) internal override {
         registry = Registry(_registryAddress);

@@ -2,7 +2,7 @@ import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { authStatus, isAdmin, setAuthStatus, token, tokenStore } from "../../features/auth";
 import { api, getServices, setToken } from "../api";
-import { ServiceResponse } from "../api/types";
+import type { ServiceResponse } from "../api/types";
 
 export const authenticationAdapter = createAuthenticationAdapter({
   getNonce: async () => {

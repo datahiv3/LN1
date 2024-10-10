@@ -1,5 +1,5 @@
 import { createAction, createReducer } from "@reduxjs/toolkit";
-import { ToastReducer } from "./types";
+import type { ToastReducer } from "./types";
 
 export const setToast = createAction<ToastReducer>("app/toast");
 

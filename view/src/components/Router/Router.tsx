@@ -1,10 +1,10 @@
-import React from "react";
+import type React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import RootLayout from "../Layout/RootLayout";
-import { LazyCreate, LazyFaucet, LazyHome, LazyImplement, LazyLogin, LazyMyNodes, LazyNode, LazyNotFound } from "./elements";
 import PublicOnly from "./PublicOnly";
 import RequireAdmin from "./RequireAdmin";
 import RequireAuth from "./RequireAuth";
+import { LazyCreate, LazyFaucet, LazyHome, LazyImplement, LazyLogin, LazyMyNodes, LazyNode, LazyNotFound } from "./elements";
 
 const Router: React.FC = () => {
   return (
@@ -30,6 +30,10 @@ const Router: React.FC = () => {
             {/* require admin */}
             <Route path="/admin" element={<RequireAdmin />}>
               <Route path="/admin" element={<LazyImplement />} />
+              <Route path="/admin/whitelist" element={<LazyImplement />} />
+              <Route path="/admin/fee" element={<LazyImplement />} />
+              <Route path="/admin/staking" element={<LazyImplement />} />
+              <Route path="/admin/nodes" element={<LazyImplement />} />
             </Route>
           </Route>
 

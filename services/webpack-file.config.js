@@ -1,12 +1,12 @@
 const glob = require("glob");
-const path = require("path");
+const path = require("node:path");
 const nodeExternals = require("webpack-node-externals");
 const NodemonPlugin = require("nodemon-webpack-plugin");
 
 // https://swc.rs/docs/configuration/swcrc
 
 module.exports = {
-  entry: glob.sync("./src/**/**.ts").reduce(function (obj, el) {
+  entry: glob.sync("./src/**/**.ts").reduce((obj, el) => {
     if (!el.includes(process.env.WEBPACK_FILE)) {
       return obj;
     }
@@ -18,7 +18,6 @@ module.exports = {
   devtool: "source-map",
   target: "node",
   externals: [nodeExternals()],
-  resolve: { extensions: [".ts", ".tsx", ".js"] },
   module: {
     rules: [
       // { test: /\.tsx?$/, use: "ts-loader", exclude: /node_modules/ },

@@ -1,13 +1,13 @@
 import axios from "axios";
 import { getServiceHosts } from "./api";
 
-const generateAuthorization = (token: string = "") => {
+const generateAuthorization = (token = "") => {
   if (token) return `Bearer ${token}`;
 
   return "";
 };
 
-const generateApi = (token: string = "") => {
+const generateApi = (token = "") => {
   return axios.create({
     headers: {
       "Content-Type": "application/json",

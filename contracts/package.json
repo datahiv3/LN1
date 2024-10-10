@@ -26,7 +26,6 @@
     "@openzeppelin/contracts-upgradeable": "^5.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.12.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-ignition-ethers": "^0.15.6",
@@ -36,14 +35,10 @@
     "@types/ethereumjs-abi": "^0.6.5",
     "chai": "^4.5.0",
     "dotenv": "^16.4.5",
-    "eslint": "^9.12.0",
     "ethereumjs-abi": "^0.6.8",
     "ethers": "^6.13.3",
     "globals": "^15.10.0",
     "hardhat": "^2.22.12",
-    "hardhat-abi-exporter": "^2.10.1",
-    "prettier": "3.3.3",
-    "prettier-plugin-organize-imports": "^4.1.0",
-    "typescript-eslint": "^8.8.0"
+    "hardhat-abi-exporter": "^2.10.1"
   }
 }

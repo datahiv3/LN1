@@ -2,13 +2,7 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "noImplicitAny": true,
-    "lib": [
-      "ES5",
-      "ES6",
-      "ES2017",
-      "ES2020",
-      "ESNext"
-    ],
+    "lib": ["ES5", "ES6", "ES2017", "ES2020", "ESNext"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "node",
@@ -21,9 +15,7 @@
     "sourceMap": true,
     "jsx": "react"
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"],
   "ts-node": {
     "swc": true
   }

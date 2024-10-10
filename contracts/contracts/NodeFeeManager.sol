@@ -14,8 +14,18 @@ import {Registry} from "./Registry.sol";
 contract NodeFeeManager is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
+    bytes32 public constant FEE_MANAGER_ROLE = keccak256("FEE_MANAGER_ROLE");
 
     Registry public registry;
+
+    mapping(address => bool) public allowToken;
+    mapping(address => uint256) public fee;
+
+    event AllowToken(address indexed token, bool allow);
+    event SetFee(address indexed token, uint256 fee);
+
+    mapping(address => mapping(address => uint256)) public paidFees;
+    event PaidFee(address indexed account, address indexed token, uint256 amount);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -33,6 +43,7 @@ contract NodeFeeManager is Initializable, AccessControlUpgradeable, PausableUpgr
         _grantRole(UPGRADER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(WITHDRAW_ROLE, msg.sender);
+        _grantRole(FEE_MANAGER_ROLE, msg.sender);
 
         _pause();
     }
@@ -57,5 +68,46 @@ contract NodeFeeManager is Initializable, AccessControlUpgradeable, PausableUpgr
 
     function withdraw() public onlyRole(WITHDRAW_ROLE) {
         withdrawERC20(registry.dataHiveTokenAddress());
+    }
+
+    function setFee(address _token, uint256 _fee) public onlyRole(FEE_MANAGER_ROLE) {
+        allowToken[_token] = true;
+        fee[_token] = _fee;
+
+        emit AllowToken(_token, true);
+        emit SetFee(_token, _fee);
+    }
+
+    function removeFee(address _token) public onlyRole(FEE_MANAGER_ROLE) {
+        allowToken[_token] = false;
+        fee[_token] = 0;
+
+        emit AllowToken(_token, false);
+        emit SetFee(_token, 0);
+    }
+
+    function getFee(address _token) public view returns (uint256) {
+        return fee[_token];
+    }
+
+    function payFee(address _token) public {
+        require(allowToken[_token], "token not allowed");
+
+        IERC20 token = IERC20(_token);
+
+        require(token.allowance(msg.sender, address(this)) >= fee[_token], "allowance not enough");
+        token.transferFrom(msg.sender, address(this), fee[_token]);
+
+        paidFees[msg.sender][_token] += fee[_token];
+
+        emit PaidFee(msg.sender, _token, fee[_token]);
+    }
+
+    function refundFee(address _account, address _token) public onlyRole(FEE_MANAGER_ROLE) {
+        IERC20 token = IERC20(_token);
+
+        token.transfer(_account, paidFees[_account][_token]);
+
+        paidFees[_account][_token] = 0;
     }
 }

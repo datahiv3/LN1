@@ -13,7 +13,7 @@ export const corsMiddleware = cors({
   origin(ctx) {
     const allowedDomains = isProduction ? crosProductionDomains : isStaging ? crosStagingDomains : crosDevDomains;
 
-    const origin = ctx.request.header.origin! || "";
+    const origin = (ctx.request.header.origin as string) || "";
 
     for (const domain of allowedDomains) {
       const regex = new RegExp(domain.replace(/\*/g, "[^.]+"));
