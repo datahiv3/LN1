@@ -1,54 +1,60 @@
-import { Tab, TabList, TabPanel, Tabs } from "@mui/joy";
+import { Stack, Tab, TabList, Tabs } from "@mui/joy";
 import { tabClasses } from "@mui/joy/Tab";
 import type React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import DefaultPage from "./DefaultPage";
 
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <DefaultPage>
-      <Tabs defaultValue={0}>
-        <TabList
-          disableUnderline
-          size="md"
-          sx={{
-            p: 0.5,
-            gap: 0.5,
-            borderRadius: "xl",
-            bgcolor: "background.level1",
-            [`& .${tabClasses.root}[aria-selected="true"]`]: {
-              boxShadow: "sm",
-              bgcolor: "background.surface",
-            },
+      <Stack spacing={2}>
+        <Tabs
+          value={location.pathname}
+          onChange={(_, value) => {
+            navigate(value as string);
           }}
         >
-          <Tab
-            disableIndicator
-            onChange={() => {
-              navigate("/admin/whitelist");
+          <TabList
+            disableUnderline
+            size="md"
+            sx={{
+              p: 0.5,
+              gap: 0.5,
+              borderRadius: "xl",
+              bgcolor: "background.level1",
+              [`& .${tabClasses.root}[aria-selected="true"]`]: {
+                boxShadow: "sm",
+                bgcolor: "background.surface",
+              },
             }}
           >
-            Whitelist
-          </Tab>
-          <Tab disableIndicator>Fee</Tab>
-          <Tab disableIndicator>Staking</Tab>
-          <Tab disableIndicator>Nodes</Tab>
-        </TabList>
-        <TabPanel value={0}>
+            <Tab disableIndicator value="/admin">
+              Overview
+            </Tab>
+            <Tab disableIndicator value="/admin/whitelist">
+              Whitelist
+            </Tab>
+            <Tab disableIndicator value="/admin/fee">
+              Fee
+            </Tab>
+            <Tab disableIndicator value="/admin/staking">
+              Staking
+            </Tab>
+            <Tab disableIndicator value="/admin/nodes">
+              Nodes
+            </Tab>
+            <Tab disableIndicator value="/admin/user/profiles">
+              User Profiles
+            </Tab>
+          </TabList>
+        </Tabs>
+        <div>
           <Outlet />
-        </TabPanel>
-        <TabPanel value={1}>
-          <Outlet />
-        </TabPanel>
-        <TabPanel value={2}>
-          <Outlet />
-        </TabPanel>
-        <TabPanel value={3}>
-          <Outlet />
-        </TabPanel>
-      </Tabs>
+        </div>
+      </Stack>
     </DefaultPage>
   );
 };

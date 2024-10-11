@@ -11,7 +11,14 @@ import {WithdrawableUpgradable} from "./utils/WithdrawableUpgradable.sol";
 import {Registry} from "./Registry.sol";
 
 /// @custom:security-contact pierre@p10node.com
-contract Whitelist is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
+contract Whitelist is
+    Initializable,
+    AccessControlUpgradeable,
+    PausableUpgradeable,
+    RegistryUpgradable,
+    WithdrawableUpgradable,
+    UUPSUpgradeable
+{
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
     bytes32 public constant WHITELIST_ROLE = keccak256("WHITELIST_ROLE");
@@ -21,6 +28,9 @@ contract Whitelist is Initializable, AccessControlUpgradeable, PausableUpgradeab
     mapping(address => bool) public whitelist;
 
     event Whitelisted(address indexed account, bool whitelisted);
+
+    // temp, array of addresses
+    address[] public whitelistAddresses;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -51,9 +61,15 @@ contract Whitelist is Initializable, AccessControlUpgradeable, PausableUpgradeab
         _unpause();
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
-    function _authorizeRegistry() internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeRegistry()
+        internal
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {}
 
     function setRegistry(address _registryAddress) internal override {
         registry = Registry(_registryAddress);
@@ -71,11 +87,61 @@ contract Whitelist is Initializable, AccessControlUpgradeable, PausableUpgradeab
 
     function addWhitelist(address account) public onlyRole(WHITELIST_ROLE) {
         whitelist[account] = true;
+
+        // temp, use indexing instead in future
+        whitelistAddresses.push(account);
+
         emit Whitelisted(account, true);
     }
 
     function removeWhitelist(address account) public onlyRole(WHITELIST_ROLE) {
+        // temp, use indexing instead in future
+        for (uint i = 0; i < whitelistAddresses.length; i++) {
+            if (whitelistAddresses[i] == account) {
+                whitelistAddresses[i] = whitelistAddresses[
+                    whitelistAddresses.length - 1
+                ];
+                whitelistAddresses.pop();
+                break;
+            }
+        }
+
         whitelist[account] = false;
+
         emit Whitelisted(account, false);
+    }
+
+    function addWhitelistBatch(
+        address[] memory accounts
+    ) public onlyRole(WHITELIST_ROLE) {
+        for (uint i = 0; i < accounts.length; i++) {
+            whitelist[accounts[i]] = true;
+
+            // temp, use indexing instead in future
+            whitelistAddresses.push(accounts[i]);
+
+            emit Whitelisted(accounts[i], true);
+        }
+    }
+
+    function removeWhitelistBatch(
+        address[] memory accounts
+    ) public onlyRole(WHITELIST_ROLE) {
+        for (uint i = 0; i < accounts.length; i++) {
+            // temp, use indexing instead in future
+            for (uint j = 0; j < whitelistAddresses.length; j++) {
+                if (whitelistAddresses[j] == accounts[i]) {
+                    whitelistAddresses[j] = whitelistAddresses[
+                        whitelistAddresses.length - 1
+                    ];
+                    whitelistAddresses.pop();
+                    break;
+                }
+            }
+
+            whitelist[accounts[i]] = false;
+
+            emit Whitelisted(accounts[i], false);
+        }
     }
 }

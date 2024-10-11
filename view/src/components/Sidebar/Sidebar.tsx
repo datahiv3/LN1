@@ -16,15 +16,18 @@ const Sidebar: React.FC = () => {
           </div>
         </div>
         <div className="pt-12 flex-1">
-          <ul className="">
-            <li className="underline">
-              <Link to="/">+ Nodes</Link>
+          <ul>
+            <li className="underline mt-1">
+              <Link to="/profile">+ My Profile</Link>
             </li>
-            <li className="underline">
+            <li className="underline mt-1">
+              <Link to="/">+ Nodes Explorer</Link>
+            </li>
+            <li className="underline mt-1">
               <Link to="/my-nodes">+ My Nodes</Link>
             </li>
             {$isAdmin && (
-              <li className="underline">
+              <li className="underline mt-1">
                 <Link to="/admin">+ Admin</Link>
               </li>
             )}

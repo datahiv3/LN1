@@ -1,13 +1,14 @@
-import type { Hosts } from "./types";
-
-let serviceHosts: Hosts = {
+let serviceHosts = {
   eth: "/v1/eth",
   token: "/v1/token",
   node: "/v1/node",
   admin: "/v1/admin",
+  user: "/v1/user",
 };
 
-export const serviceKeys = ["eth", "token", "node", "admin"];
+export type Hosts = typeof serviceHosts;
+
+export const serviceKeys = ["eth", "token", "node", "admin", "user"];
 
 export const setServiceHosts = (hosts: Hosts) => {
   serviceHosts = hosts;

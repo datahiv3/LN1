@@ -15,6 +15,7 @@ export interface ServiceResponse<T> {
   version: string;
   message: ResponseMessage;
   data: T;
+  error?: string;
 }
 
 export type Hosts = {

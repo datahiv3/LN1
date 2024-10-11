@@ -5,6 +5,7 @@ import { useAccountEffect } from "wagmi";
 import { authStatus, isAdmin, token } from "../../features/auth";
 import { api, createServices, setToken } from "../../services/api";
 import { createServiceHosts } from "../../services/api/create";
+import { getProfile } from "../../services/api/profile/getProfile";
 import type { ServiceResponse } from "../../services/api/types";
 import { signOut } from "../../services/eth/authenticationAdapter";
 
@@ -28,6 +29,8 @@ const AppState: React.FC<PropsWithChildren> = ({ children }) => {
 
         authStatus.set("authenticated");
         isAdmin.set(data.data.isAdmin);
+
+        getProfile(services);
       })
       .catch(() => {
         signOut();

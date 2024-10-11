@@ -10,6 +10,7 @@ declare module "koa" {
     isAdmin: boolean;
 
     body?: ResponseBodyT;
+    parsedBody?: unknown;
   }
 }
 

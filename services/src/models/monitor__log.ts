@@ -1,5 +1,5 @@
 import { DbModel } from "../db/collName";
-import type { MonitorLogModel } from "./model";
+import type { MonitorLogModel } from "./monitor";
 
 export const monitorDb = new DbModel("monitor");
 

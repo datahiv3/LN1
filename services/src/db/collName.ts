@@ -10,8 +10,8 @@ export class DbModel {
   public db: Db;
 
   public constructor(databaseName: string) {
-    this.databaseName = databaseName;
-    this.db = client.db(databaseName);
+    this.databaseName = `datahive__${databaseName}`;
+    this.db = client.db(this.databaseName);
   }
 
   private createCollectionName(collectionName: string) {

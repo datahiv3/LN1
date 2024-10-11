@@ -21,9 +21,12 @@ contract NodeStaking is
 {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
-    bytes32 public constant STAKER_ROLE = keccak256("STAKING_ADMIN_ROLE");
+    bytes32 public constant STAKING_ADMIN_ROLE =
+        keccak256("STAKING_ADMIN_ROLE");
 
     Registry public registry;
+
+    mapping(address => bool) public tokens;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -41,7 +44,7 @@ contract NodeStaking is
         _grantRole(UPGRADER_ROLE, msg.sender);
         _grantRole(PAUSER_ROLE, msg.sender);
         _grantRole(WITHDRAW_ROLE, msg.sender);
-        _grantRole(STAKER_ROLE, msg.sender);
+        _grantRole(STAKING_ADMIN_ROLE, msg.sender);
 
         _pause();
     }
@@ -72,5 +75,13 @@ contract NodeStaking is
 
     function withdraw() public onlyRole(WITHDRAW_ROLE) {
         withdrawERC20(registry.dataHiveTokenAddress());
+    }
+
+    function addToken(address token) public onlyRole(STAKING_ADMIN_ROLE) {
+        tokens[token] = true;
+    }
+
+    function removeToken(address token) public onlyRole(STAKING_ADMIN_ROLE) {
+        tokens[token] = false;
     }
 }

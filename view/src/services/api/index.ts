@@ -29,6 +29,7 @@ const generateServices = () => {
   const tokenEndpoint = serviceHosts.token;
   const nodeEndpoint = serviceHosts.node;
   const adminEndpoint = serviceHosts.admin;
+  const userEndpoint = serviceHosts.user;
 
   return {
     eth: {
@@ -48,6 +49,9 @@ const generateServices = () => {
     admin: {
       index: `${adminEndpoint}`,
     },
+    user: {
+      profile: `${userEndpoint}/profile`,
+    },
   };
 };
 
@@ -62,3 +66,5 @@ export const createServices = () => {
 export const getServices = () => {
   return services;
 };
+
+export type Servcices = typeof services;

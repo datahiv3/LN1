@@ -11,5 +11,6 @@ export const createServiceHosts = () => {
     token: buildEndpoint("/v1/token"),
     node: buildEndpoint("/v1/node"),
     admin: buildEndpoint("/v1/admin"),
+    user: buildEndpoint("/v1/user"),
   });
 };

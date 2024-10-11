@@ -1,8 +1,13 @@
+import { Card } from "@mui/joy";
 import type React from "react";
-import DefaultPage from "../../components/Layout/DefaultPage";
 
 const Staking: React.FC = () => {
-  return <DefaultPage />;
+  return (
+    <Card>
+      <div>Staking</div>
+      <div>Implementing</div>
+    </Card>
+  );
 };
 
 export default Staking;

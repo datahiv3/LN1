@@ -5,11 +5,6 @@ import { createSigner } from "../../services/eth/createSigner";
 import { successResponse } from "../../services/response";
 
 export const tokenGetProof = async (ctx: KoaContext) => {
-  if (!ctx.isAuth) {
-    ctx.status = 401;
-    return;
-  }
-
   const signer = await createSigner();
 
   const message = randomstring.generate({ length: 10 });

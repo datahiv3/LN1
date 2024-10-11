@@ -8,6 +8,7 @@ import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { useAccount, useBalance, useTransactionConfirmations, useWriteContract } from "wagmi";
 import { useAppDispatch } from "../app/hooks";
 import FormError from "../components/Form/FormError";
+import BodyMd from "../components/Layout/BodyMd";
 import Code from "../components/Layout/Code";
 import DefaultPage from "../components/Layout/DefaultPage";
 import { setToast } from "../components/Toast/toastReducer";
@@ -92,18 +93,20 @@ const Faucet: React.FC = () => {
       <Stack spacing={2}>
         <Card>
           <Typography level="title-lg">Step 1: Faucet OP Sepolia</Typography>
-          <Typography level="body-md">
+          <BodyMd>
             <a href="https://docs.optimism.io/builders/tools/build/faucets" target="_blank" rel="noopener noreferrer" className="underline">
               Faucet OP Sepolia
             </a>
-            <div>Your OP Sepolia ETH balance: {balance.data?.value ? _.round(Number.parseFloat(ethers.formatEther(balance.data?.value || "")), 6) : "Loading.."}</div>
-          </Typography>
+            <div>
+              Your OP Sepolia ETH balance: {balance.data?.value !== undefined ? _.round(Number.parseFloat(ethers.formatEther(balance.data?.value || "0")), 6) : "Loading.."}
+            </div>
+          </BodyMd>
         </Card>
 
         <Card>
           <Typography level="title-lg">Step 2: Request the DataHive Token</Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Typography level="body-md">
+            <BodyMd>
               <div>
                 <div>
                   Request the <span className="font-bold">DataHive Token</span>. You can use it to pay fee for the Legalese Node.
@@ -204,7 +207,7 @@ const Faucet: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </Typography>
+            </BodyMd>
           </form>
         </Card>
       </Stack>

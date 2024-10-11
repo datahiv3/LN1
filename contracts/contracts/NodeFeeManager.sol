@@ -11,7 +11,14 @@ import {WithdrawableUpgradable} from "./utils/WithdrawableUpgradable.sol";
 import {Registry} from "./Registry.sol";
 
 /// @custom:security-contact pierre@p10node.com
-contract NodeFeeManager is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
+contract NodeFeeManager is
+    Initializable,
+    AccessControlUpgradeable,
+    PausableUpgradeable,
+    RegistryUpgradable,
+    WithdrawableUpgradable,
+    UUPSUpgradeable
+{
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
     bytes32 public constant FEE_MANAGER_ROLE = keccak256("FEE_MANAGER_ROLE");
@@ -24,8 +31,28 @@ contract NodeFeeManager is Initializable, AccessControlUpgradeable, PausableUpgr
     event AllowToken(address indexed token, bool allow);
     event SetFee(address indexed token, uint256 fee);
 
-    mapping(address => mapping(address => uint256)) public paidFees;
-    event PaidFee(address indexed account, address indexed token, uint256 amount);
+    mapping(address => mapping(uint256 => mapping(address => uint256)))
+        public paidFees;
+    // address -> node id -> token -> amount
+    mapping(address => mapping(uint256 => address)) public paidToken;
+    // address -> node id -> token
+    mapping(address => mapping(uint256 => bool)) public nodes;
+    // address -> node id -> bool
+
+    mapping(address => uint256) nodeCount;
+
+    event PaidFee(
+        address indexed account,
+        uint256 indexed nodeId,
+        address indexed token,
+        uint256 amount
+    );
+    event RefundFee(
+        address indexed account,
+        uint256 indexed nodeId,
+        address indexed token,
+        uint256 amount
+    );
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -56,9 +83,15 @@ contract NodeFeeManager is Initializable, AccessControlUpgradeable, PausableUpgr
         _unpause();
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
-    function _authorizeRegistry() internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeRegistry()
+        internal
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {}
 
     function setRegistry(address _registryAddress) internal override {
         registry = Registry(_registryAddress);
@@ -70,7 +103,22 @@ contract NodeFeeManager is Initializable, AccessControlUpgradeable, PausableUpgr
         withdrawERC20(registry.dataHiveTokenAddress());
     }
 
-    function setFee(address _token, uint256 _fee) public onlyRole(FEE_MANAGER_ROLE) {
+    function setAllowToken(address _token) public onlyRole(FEE_MANAGER_ROLE) {
+        allowToken[_token] = true;
+
+        emit AllowToken(_token, true);
+    }
+
+    function removeToken(address _token) public onlyRole(FEE_MANAGER_ROLE) {
+        allowToken[_token] = false;
+
+        emit AllowToken(_token, false);
+    }
+
+    function setFee(
+        address _token,
+        uint256 _fee
+    ) public onlyRole(FEE_MANAGER_ROLE) {
         allowToken[_token] = true;
         fee[_token] = _fee;
 
@@ -95,19 +143,42 @@ contract NodeFeeManager is Initializable, AccessControlUpgradeable, PausableUpgr
 
         IERC20 token = IERC20(_token);
 
-        require(token.allowance(msg.sender, address(this)) >= fee[_token], "allowance not enough");
+        require(
+            token.allowance(msg.sender, address(this)) >= fee[_token],
+            "allowance not enough"
+        );
         token.transferFrom(msg.sender, address(this), fee[_token]);
 
-        paidFees[msg.sender][_token] += fee[_token];
+        uint256 nodeId = nodeCount[msg.sender];
 
-        emit PaidFee(msg.sender, _token, fee[_token]);
+        paidToken[msg.sender][nodeId] = _token;
+        paidFees[msg.sender][nodeId][_token] = fee[_token];
+        nodes[msg.sender][nodeId] = true;
+
+        nodeCount[msg.sender]++;
+
+        emit PaidFee(msg.sender, nodeId, _token, fee[_token]);
     }
 
-    function refundFee(address _account, address _token) public onlyRole(FEE_MANAGER_ROLE) {
-        IERC20 token = IERC20(_token);
+    function refundFee(
+        address _account,
+        uint256 nodeId
+    ) public onlyRole(FEE_MANAGER_ROLE) {
+        require(nodes[_account][nodeId], "node not exist");
 
-        token.transfer(_account, paidFees[_account][_token]);
+        address tokenAddress = paidToken[_account][nodeId];
+        IERC20 token = IERC20(tokenAddress);
 
-        paidFees[_account][_token] = 0;
+        uint256 refund = paidFees[_account][nodeId][tokenAddress];
+        token.transfer(_account, refund);
+
+        nodes[_account][nodeId] = false;
+
+        emit RefundFee(
+            _account,
+            nodeId,
+            tokenAddress,
+            paidFees[_account][nodeId][tokenAddress]
+        );
     }
 }

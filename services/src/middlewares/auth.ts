@@ -2,7 +2,7 @@ import { verify } from "jsonwebtoken";
 import { jwtSecret } from "../config";
 import type { KoaContext, KoaNext } from "../global";
 
-export const auth = async (ctx: KoaContext, next: KoaNext) => {
+export const authMiddleware = async (ctx: KoaContext, next: KoaNext) => {
   const token = (ctx.request.headers.authorization || "").replaceAll("Bearer ", "");
 
   if (!token) {
