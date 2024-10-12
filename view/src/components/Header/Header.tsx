@@ -1,24 +1,25 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type React from "react";
-import Container from "../Layout/Container";
 import Link from "../Layout/Link";
 
 const Header: React.FC = () => {
   return (
-    <header className="border-b border-color-[#ddd]">
-      <Container className="flex items-center justify-between min-h-[62px]">
+    <header className="flex-1">
+      <div className="flex items-center justify-between h-[60px]">
         <div>
           <Link to="/">
             <img src="/images/datahive-logo.webp" width={130} alt="DatHive Logo" />
           </Link>
         </div>
-        <div className="flex gap-6 items-center">
-          <Link to="/faucet">Faucet</Link>
+        <div className="gap-6 items-center flex">
+          <Link to="/faucet" className="hidden lg:block">
+            Faucet
+          </Link>
           <div>
             <ConnectButton />
           </div>
         </div>
-      </Container>
+      </div>
     </header>
   );
 };

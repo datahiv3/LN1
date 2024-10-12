@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {DataHiveToken} from "./DataHiveToken.sol";
 import {NodeFeeManager} from "./NodeFeeManager.sol";
 import {NodeStaking} from "./NodeStaking.sol";
-import {StakingRewardDistribution} from "./StakingRewardDistribution.sol";
+import {StakingRewardsDistribution} from "./StakingRewardsDistribution.sol";
 import {TestnetFaucet} from "./TestnetFaucet.sol";
 import {SignatureVerification} from "./utils/SignatureVerification.sol";
 import {Whitelist} from "./Whitelist.sol";
@@ -27,7 +27,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     address payable public whitelistAddress;
     address payable public nodeFeeManagerAddress;
     address payable public nodeStakingAddress;
-    address payable public stakingRewardDistributionAddress;
+    address payable public stakingRewardsDistributionAddress;
 
     address payable public testnetFaucetAddress;
 
@@ -37,7 +37,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     Whitelist public whitelist;
     NodeFeeManager public nodeFeeManager;
     NodeStaking public nodeStaking;
-    StakingRewardDistribution public stakingRewardDistribution;
+    StakingRewardsDistribution public stakingRewardsDistribution;
 
     TestnetFaucet public testnetFaucet;
 
@@ -56,7 +56,9 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
         _grantRole(UPGRADER_ROLE, msg.sender);
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
     function setGeneral(
         address payable _dataHiveTokenAddress,
@@ -64,7 +66,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
         address payable _whitelistAddress,
         address payable _nodeFeeManagerAddress,
         address payable _nodeStakingAddress,
-        address payable _stakingRewardDistributionAddress,
+        address payable _stakingRewardsDistributionAddress,
         address payable _testnetFaucetAddress
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         dataHiveTokenAddress = _dataHiveTokenAddress;
@@ -72,80 +74,105 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
 
         nodeFeeManagerAddress = _nodeFeeManagerAddress;
         nodeStakingAddress = _nodeStakingAddress;
-        stakingRewardDistributionAddress = _stakingRewardDistributionAddress;
+        stakingRewardsDistributionAddress = _stakingRewardsDistributionAddress;
 
         testnetFaucetAddress = _testnetFaucetAddress;
 
         dataHiveToken = DataHiveToken(_dataHiveTokenAddress);
-        signatureVerification = SignatureVerification(_signatureVerificationAddress);
+        signatureVerification = SignatureVerification(
+            _signatureVerificationAddress
+        );
 
         whitelist = Whitelist(_whitelistAddress);
         nodeFeeManager = NodeFeeManager(_nodeFeeManagerAddress);
         nodeStaking = NodeStaking(_nodeStakingAddress);
-        stakingRewardDistribution = StakingRewardDistribution(_stakingRewardDistributionAddress);
+        stakingRewardsDistribution = StakingRewardsDistribution(
+            _stakingRewardsDistributionAddress
+        );
 
         testnetFaucet = TestnetFaucet(_testnetFaucetAddress);
 
         contractAddresses["dataHiveToken"] = _dataHiveTokenAddress;
-        contractAddresses["signatureVerification"] = _signatureVerificationAddress;
+        contractAddresses[
+            "signatureVerification"
+        ] = _signatureVerificationAddress;
 
         contractAddresses["nodeFeeManager"] = _nodeFeeManagerAddress;
         contractAddresses["nodeStaking"] = _nodeStakingAddress;
-        contractAddresses["stakingRewardDistribution"] = _stakingRewardDistributionAddress;
+        contractAddresses[
+            "stakingRewardsDistribution"
+        ] = _stakingRewardsDistributionAddress;
 
         contractAddresses["testnetFaucet"] = _testnetFaucetAddress;
     }
 
-    function setDataHiveToken(address payable _address) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setDataHiveToken(
+        address payable _address
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         dataHiveTokenAddress = _address;
         contractAddresses["dataHiveToken"] = _address;
 
         dataHiveToken = DataHiveToken(_address);
     }
 
-    function setSignatureVerification(address payable _address) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setSignatureVerification(
+        address payable _address
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         signatureVerificationAddress = _address;
         contractAddresses["signatureVerification"] = _address;
 
         signatureVerification = SignatureVerification(_address);
     }
 
-    function setWhitelist(address payable _address) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setWhitelist(
+        address payable _address
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         whitelistAddress = _address;
         contractAddresses["whitelist"] = _address;
 
         whitelist = Whitelist(_address);
     }
 
-    function setNodeFeeManager(address payable _address) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setNodeFeeManager(
+        address payable _address
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         nodeFeeManagerAddress = _address;
         contractAddresses["nodeFeeManager"] = _address;
 
         nodeFeeManager = NodeFeeManager(_address);
     }
 
-    function setNodeStaking(address payable _address) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setNodeStaking(
+        address payable _address
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         nodeStakingAddress = _address;
         contractAddresses["nodeStaking"] = _address;
 
         nodeStaking = NodeStaking(_address);
     }
 
-    function setStakingRewardDistribution(address payable _address) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        stakingRewardDistributionAddress = _address;
-        contractAddresses["stakingRewardDistribution"] = _address;
+    function setStakingRewardsDistribution(
+        address payable _address
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        stakingRewardsDistributionAddress = _address;
+        contractAddresses["stakingRewardsDistribution"] = _address;
 
-        stakingRewardDistribution = StakingRewardDistribution(_address);
+        stakingRewardsDistribution = StakingRewardsDistribution(_address);
     }
 
-    function setTestnetFaucet(address payable _address) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setTestnetFaucet(
+        address payable _address
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         testnetFaucetAddress = _address;
         contractAddresses["testnetFaucet"] = _address;
 
         testnetFaucet = TestnetFaucet(_address);
     }
 
-    function setMapping(string memory _name, address _address) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setMapping(
+        string memory _name,
+        address _address
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         contractAddresses[_name] = _address;
     }
 }

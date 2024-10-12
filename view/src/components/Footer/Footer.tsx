@@ -1,24 +1,20 @@
 import type React from "react";
-import Container from "../Layout/Container";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="py-12">
-      <Container className="flex justify-between">
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-1">
-            <img src="/images/datahive-logo2.webp" width={200} alt="logo" />
-            An AI platform providing the infrastructure for a fair & efficient personal information economy.
-          </div>
-          <div>
-            DataHive |{" "}
-            <a href="https://www.datahive.network/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline">
-              Privacy Policy
-            </a>
-          </div>
+    <footer className="py-6 pl-[300px] max-[765px]:pl-0">
+      <div className="flex flex-col gap-2 justify-between px-12">
+        <div className="flex flex-col gap-3">
+          <img src="/images/datahive-logo2.webp" width={120} alt="logo" />
+          <div>An AI platform providing the infrastructure for a fair & efficient personal information economy.</div>
         </div>
-        <div />
-      </Container>
+        <div>
+          DataHive |{" "}
+          <a href="https://www.datahive.network/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline">
+            Privacy Policy
+          </a>
+        </div>
+      </div>
     </footer>
   );
 };

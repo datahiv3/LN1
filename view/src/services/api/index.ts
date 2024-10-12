@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getServiceHosts } from "./api";
+import { getProfiles } from "./profile/getProfiles";
 
 const generateAuthorization = (token = "") => {
   if (token) return `Bearer ${token}`;
@@ -20,6 +21,8 @@ export let api = generateApi();
 
 export const setToken = (token: string) => {
   api = generateApi(token);
+
+  getProfiles(getServices());
 };
 
 const generateServices = () => {
@@ -48,9 +51,17 @@ const generateServices = () => {
     },
     admin: {
       index: `${adminEndpoint}`,
+      allProfiles: `${adminEndpoint}/user/all/profiles`,
+      approveProfile: (id: string) => `${adminEndpoint}/user/profile/approve/${id}`,
+      rejectProfile: (id: string) => `${adminEndpoint}/user/profile/reject/${id}`,
+      getUserProfile: (id: string) => `${adminEndpoint}/user/profile/${id}`,
     },
     user: {
       profile: `${userEndpoint}/profile`,
+      getProfile: (id: string) => `${userEndpoint}/profile/${id}`,
+      cancel: (id: string) => `${userEndpoint}/profile/${id}`,
+      profiles: `${userEndpoint}/profiles`,
+      profilesMaxVersion: `${userEndpoint}/profiles/maxVersion`,
     },
   };
 };

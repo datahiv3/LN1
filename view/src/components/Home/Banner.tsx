@@ -5,8 +5,9 @@ const Banner: React.FC = () => {
     <div className="bg-[#eee] px-8 py-6 rounded-xl">
       <div className="text-xl font-bold mb-3">Legalese Node</div>
       <div className="">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas earum incidunt aliquid deserunt veniam nihil debitis voluptates quibusdam, perferendis assumenda
-        praesentium voluptatibus tenetur a ut voluptatem facilis itaque eveniet nesciunt.
+        The Legalese Node is a vital piece of the DataHive ecosystem, serving as the engine behind our Legal Intelligence layer. While just one component of the larger system, its
+        impact is immense—transforming raw legal data into actionable intelligence. By continuously evolving to adapt to new regulations and challenges, the Legalese Node is at the
+        forefront of driving a more secure and user-centric digital experience. For more information, visit DataHive Resources.
       </div>
     </div>
   );

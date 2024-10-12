@@ -1,4 +1,4 @@
-import { Button, Input } from "@material-tailwind/react";
+import { Button, Input } from "@mantine/core";
 import { Alert, Card, Stack, Typography } from "@mui/joy";
 import { ethers } from "ethers";
 import _ from "lodash";
@@ -90,7 +90,7 @@ const Faucet: React.FC = () => {
 
   return (
     <DefaultPage>
-      <Stack spacing={2}>
+      <Stack spacing={2} className="max-w-[800px]">
         <Card>
           <Typography level="title-lg">Step 1: Faucet OP Sepolia</Typography>
           <BodyMd>
@@ -115,7 +115,7 @@ const Faucet: React.FC = () => {
 
                 <div className="mt-12 flex flex-col gap-3">
                   <div className="flex gap-2">
-                    <Input placeholder="Recipient Wallet Address" value={account.address} disabled crossOrigin={undefined} />
+                    <Input placeholder="Recipient Wallet Address" value={account.address} disabled className="flex-1" />
 
                     <Button disabled={loading || !captcha} type="submit" placeholder="">
                       Faucet

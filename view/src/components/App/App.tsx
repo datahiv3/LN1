@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@material-tailwind/react";
+import { MantineProvider, createTheme } from "@mantine/core";
 import { useStore } from "@nanostores/react";
 import { RainbowKitAuthenticationProvider, RainbowKitProvider, getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -22,6 +22,8 @@ const config = getDefaultConfig({
 
 const queryClient = new QueryClient();
 
+const theme = createTheme({});
+
 const App: React.FC = () => {
   const $authStatus = useStore(authStatus);
 
@@ -30,14 +32,14 @@ const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <RainbowKitAuthenticationProvider adapter={authenticationAdapter} status={$authStatus}>
           <RainbowKitProvider>
-            <ThemeProvider>
+            <MantineProvider theme={theme} forceColorScheme="light">
               <PopupProvider>
                 <AppState>
                   <Router />
                 </AppState>
                 <Toast />
               </PopupProvider>
-            </ThemeProvider>
+            </MantineProvider>
           </RainbowKitProvider>
         </RainbowKitAuthenticationProvider>
       </QueryClientProvider>

@@ -4,6 +4,7 @@ import { jwtSecret } from "../../config";
 import type { KoaContext } from "../../global";
 import { errorResponse, successResponse } from "../../services/response";
 import { isAdmin } from "../../utils/isAdmin";
+import { production } from "../../utils/production";
 
 interface Message {
   nonce: string;
@@ -33,7 +34,7 @@ export const ethVerify = async (ctx: KoaContext) => {
     },
     jwtSecret,
     {
-      expiresIn: "1d",
+      expiresIn: production<string>("1d", "30 minutes"),
     },
   );
 

@@ -1,43 +1,81 @@
-import { Button } from "@material-tailwind/react";
-import { Card, Stack, Typography } from "@mui/joy";
+import { Alert, Button } from "@mantine/core";
+import { Typography } from "@mui/joy";
 import { useStore } from "@nanostores/react";
 import type React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { profile } from "../../features/user";
-import BodyMd from "./BodyMd";
+import { currentKycStatus, isVerified, profiles } from "../../features/user";
+import { getKycPendingColor } from "../../services/profile/KycPendingBadge";
 import DefaultPage from "./DefaultPage";
 
 const ProfileLayout: React.FC = () => {
-  const $profile = useStore(profile);
+  const $profiles = useStore(profiles);
+  const $isVerified = useStore(isVerified);
+  const $currentKycStatus = useStore(currentKycStatus);
+
   const navigate = useNavigate();
   const location = useLocation();
 
+  if ($profiles.loading) {
+    return null;
+  }
+
   return (
     <DefaultPage>
-      <Stack spacing={2}>
-        <Card>
-          <Typography level="title-lg">Profile</Typography>
+      <div>
+        <div className="flex flex-col gap-6">
+          <Typography level="title-lg">Add Your Profile to KYC</Typography>
 
-          {!$profile.loading && !$profile.data && (
-            <BodyMd>
-              <Stack spacing={1}>
-                <div>To complete KYC Basic 1, you must update your profile.</div>
-                {location.pathname === "/profile" && (
-                  <Button
-                    placeholder=""
-                    onClick={() => {
-                      navigate("/profile/edit");
-                    }}
-                  >
-                    Add your profile
-                  </Button>
-                )}
-              </Stack>
-            </BodyMd>
+          {location.pathname === "/profile" && (
+            <div className="flex flex-col gap-1">
+              <div className="pb-3">
+                <Alert variant="light" color={getKycPendingColor($currentKycStatus)}>
+                  {$currentKycStatus === "pending" && <div>Your KYC is pending, please wait for approval from admins</div>}
+
+                  {$currentKycStatus === "approved" && <div>Your KYC is approved</div>}
+
+                  {$currentKycStatus === "rejected" && <div>Your KYC is rejected</div>}
+
+                  {$currentKycStatus === "cancelled" && <div>Your KYC is cancelled</div>}
+
+                  {$currentKycStatus === "not started yet" && <div>You don't have verified profile</div>}
+                </Alert>
+              </div>
+            </div>
           )}
-        </Card>
+        </div>
+
         <Outlet />
-      </Stack>
+
+        {location.pathname === "/profile" && (
+          <div className="mt-6">
+            {["not started yet", "rejected", "cancelled"].includes($currentKycStatus) && (
+              <div className="flex items-center gap-2">
+                <Button
+                  size="md"
+                  onClick={() => {
+                    navigate("/profile/create");
+                  }}
+                >
+                  Add Profile
+                </Button>
+              </div>
+            )}
+
+            {$isVerified && (
+              <div className="flex items-center gap-2">
+                <Button
+                  size="md"
+                  onClick={() => {
+                    navigate("/profile/create");
+                  }}
+                >
+                  Update Profile
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </DefaultPage>
   );
 };

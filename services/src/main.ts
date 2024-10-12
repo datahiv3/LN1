@@ -4,6 +4,11 @@ import bodyParser from "koa-bodyparser";
 import helmet from "koa-helmet";
 import koaLogger from "koa-pino-logger";
 import { isProduction } from "./config";
+import { adminGetAllUserProfiles } from "./controllers/admin/allUserProfiles";
+import { adminApproveProfile, adminRejectProfile } from "./controllers/admin/approveProfile";
+import { adminGetUserProfile } from "./controllers/admin/getUserProfile";
+import { adminGetUserProfileMaxVersion } from "./controllers/admin/getUserProfileMaxVersion";
+import { adminGetUserProfiles } from "./controllers/admin/getUserProfiles";
 import { ethHealth } from "./controllers/eth/health";
 import { ethIsAdmin } from "./controllers/eth/is-admin";
 import { ethLogout } from "./controllers/eth/logout";
@@ -12,8 +17,11 @@ import { ethVerify } from "./controllers/eth/verify";
 import { index } from "./controllers/index";
 import { createNode } from "./controllers/node/create";
 import { tokenGetProof } from "./controllers/token/proof";
-import { editProfile } from "./controllers/user/editProfile";
+import { cancelProfile } from "./controllers/user/cancelProfile";
+import { createProfile } from "./controllers/user/createProfile";
 import { getProfile } from "./controllers/user/getProfile";
+import { getProfileMaxVersion } from "./controllers/user/getProfileMaxVersion";
+import { getProfiles } from "./controllers/user/getProfiles";
 import { cronInit } from "./cron/index";
 import { client } from "./db";
 import { authMiddleware } from "./middlewares/auth";
@@ -26,6 +34,7 @@ import { initMiddleware } from "./middlewares/init";
 import { limiter } from "./middlewares/limiter";
 import { notFound } from "./middlewares/notFound";
 import { paginationMiddleware } from "./middlewares/page";
+import { requireAdminMiddleware } from "./middlewares/requireAdmin";
 import { requireAuthMiddleware } from "./middlewares/requireAuth";
 import { verifySignatureMiddleware } from "./middlewares/verifySignature";
 import logger from "./utils/log";
@@ -78,12 +87,21 @@ router.use(node.routes());
 
 // admin
 const admin = new Router({ prefix: "/admin" });
+admin.get("/user/profiles", requireAdminMiddleware, adminGetUserProfiles);
+admin.get("/user/profile/:id", requireAdminMiddleware, adminGetUserProfile);
+admin.get("/user/all/profiles", requireAdminMiddleware, adminGetAllUserProfiles);
+admin.get("/user/profile/maxVersion", requireAdminMiddleware, adminGetUserProfileMaxVersion);
+admin.post("/user/profile/approve/:id", requireAdminMiddleware, adminApproveProfile);
+admin.post("/user/profile/reject/:id", requireAdminMiddleware, adminRejectProfile);
 router.use(admin.routes());
 
 // user
 const user = new Router({ prefix: "/user" });
-user.get("/profile", requireAuthMiddleware, getProfile);
-user.post("/profile", requireAuthMiddleware, verifySignatureMiddleware, editProfile);
+user.get("/profiles", requireAuthMiddleware, getProfiles);
+user.get("/profile/:id", requireAuthMiddleware, getProfile);
+user.post("/profile", requireAuthMiddleware, verifySignatureMiddleware, createProfile);
+user.delete("/profile/:id", requireAuthMiddleware, cancelProfile);
+user.get("/profiles/maxVersion", requireAuthMiddleware, getProfileMaxVersion);
 router.use(user.routes());
 
 app.use(router.routes());

@@ -1,3 +1,4 @@
+import "@mantine/core/styles.css";
 import "@rainbow-me/rainbowkit/styles.css";
 // biome-ignore lint/style/useNodejsImportProtocol: <explanation>
 import { Buffer } from "buffer";

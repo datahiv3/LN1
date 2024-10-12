@@ -14,7 +14,8 @@ export const LazyLogin = create(lazy(() => import("../../screens/Login")));
 
 export const LazyFaucet = create(lazy(() => import("../../screens/Faucet")));
 export const LazyProfile = create(lazy(() => import("../../screens/Profile/Profile")));
-export const LazyEditProfile = create(lazy(() => import("../../screens/Profile/Edit")));
+export const LazyCreateProfile = create(lazy(() => import("../../screens/Profile/Create")));
+export const LazyViewProfile = create(lazy(() => import("../../screens/Profile/View")));
 
 export const LazyMyNodes = create(lazy(() => import("../../screens/Nodes/MyNodes")));
 export const LazyNode = create(lazy(() => import("../../screens/Nodes/Node")));
@@ -25,7 +26,7 @@ export const LazyAdminWhitelist = create(lazy(() => import("../../screens/Admin/
 export const LazyAdminFee = create(lazy(() => import("../../screens/Admin/Fee")));
 export const LazyAdminStaking = create(lazy(() => import("../../screens/Admin/Staking")));
 export const LazyAdminNodes = create(lazy(() => import("../../screens/Admin/Nodes")));
-export const LazyAdminUserProfiles = create(lazy(() => import("../../screens/Admin/Profiles")));
+export const LazyAdminUserProfiles = create(lazy(() => import("../../screens/Admin/UserProfiles")));
 
 export const LazyNotFound = create(lazy(() => import("../../screens/NotFound")));
 export const LazyImplement = create(lazy(() => import("../../screens/Implementing")));

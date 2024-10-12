@@ -108,7 +108,7 @@ export default function NodesByCountry() {
     <Card variant="outlined" sx={{ height: "100%", flexGrow: 1 }}>
       <CardContent>
         <Typography level="title-lg" gutterBottom>
-          Nodes by country
+          KYC Verifed by Country
         </Typography>
 
         <div>
