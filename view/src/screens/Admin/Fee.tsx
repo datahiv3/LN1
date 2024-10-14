@@ -1,10 +1,10 @@
-import { Card } from "@mui/joy";
+import { Card, Typography } from "@mui/joy";
 import type React from "react";
 
 const AdminFee: React.FC = () => {
   return (
     <Card>
-      <div>Change fee</div>
+      <Typography level="title-lg">Change Fee</Typography>
       <div>Implementing</div>
     </Card>
   );

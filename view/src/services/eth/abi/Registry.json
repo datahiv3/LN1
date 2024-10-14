@@ -464,6 +464,11 @@
       },
       {
         "internalType": "address payable",
+        "name": "_whitelistedAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
         "name": "_nodeFeeManagerAddress",
         "type": "address"
       },
@@ -474,7 +479,7 @@
       },
       {
         "internalType": "address payable",
-        "name": "_stakingRewardDistributionAddress",
+        "name": "_stakingRewardsDistributionAddress",
         "type": "address"
       },
       {
@@ -553,7 +558,7 @@
         "type": "address"
       }
     ],
-    "name": "setStakingRewardDistribution",
+    "name": "setStakingRewardsDistribution",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -612,10 +617,10 @@
   },
   {
     "inputs": [],
-    "name": "stakingRewardDistribution",
+    "name": "stakingRewardsDistribution",
     "outputs": [
       {
-        "internalType": "contract StakingRewardDistribution",
+        "internalType": "contract StakingRewardsDistribution",
         "name": "",
         "type": "address"
       }
@@ -625,7 +630,7 @@
   },
   {
     "inputs": [],
-    "name": "stakingRewardDistributionAddress",
+    "name": "stakingRewardsDistributionAddress",
     "outputs": [
       {
         "internalType": "address payable",
@@ -701,10 +706,10 @@
   },
   {
     "inputs": [],
-    "name": "whitelist",
+    "name": "whitelisted",
     "outputs": [
       {
-        "internalType": "contract Whitelist",
+        "internalType": "contract Whitelisted",
         "name": "",
         "type": "address"
       }
@@ -714,7 +719,7 @@
   },
   {
     "inputs": [],
-    "name": "whitelistAddress",
+    "name": "whitelistedAddress",
     "outputs": [
       {
         "internalType": "address payable",

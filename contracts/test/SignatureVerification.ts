@@ -8,10 +8,11 @@ import type { SignatureVerification } from "../typechain-types";
 
 describe("Group1", () => {
   let deployer: HardhatEthersSigner;
+  let addr1: HardhatEthersSigner;
   let signatureVerification: SignatureVerification;
 
   beforeEach(async () => {
-    [deployer] = await ethers.getSigners();
+    [deployer, addr1] = await ethers.getSigners();
     const SignatureVerificationContract = await ethers.getContractFactory("SignatureVerification", deployer);
     const deploySign = await upgrades.deployProxy(SignatureVerificationContract, [], { kind: "uups", initializer: "initialize" });
     await deploySign.waitForDeployment();
@@ -20,29 +21,23 @@ describe("Group1", () => {
   });
 
   it("should return the correct signer", async () => {
-    const privateKey = "8a152bd030deeaa4a8b1b4ad3a07459d452fa4de3b95f0b8ab72c941951da82c";
-    const signer = new ethers.Wallet(privateKey, ethers.provider);
-
     const message = "XXug25sDjb";
 
-    const signature = await signer.signMessage(message);
+    const signature = await addr1.signMessage(message);
 
-    await expect(signatureVerification.connect(deployer).setSignerAddress(signer.address)).to.not.reverted;
+    await expect(signatureVerification.connect(deployer).setSignerAddress(addr1.address)).to.not.reverted;
     await expect(signatureVerification.connect(deployer).unpause()).to.not.reverted;
 
     expect(await signatureVerification.verifyMessage(message, signature)).to.equal(true);
   });
 
   it("should return the correct signer with bytes message", async () => {
-    const privateKey = "8a152bd030deeaa4a8b1b4ad3a07459d452fa4de3b95f0b8ab72c941951da82c";
-    const signer = new ethers.Wallet(privateKey, ethers.provider);
-
     const message = "XXug25sDjb";
     const hash = abi.soliditySHA3(["address", "string"], ["0xe70adf9aE4d5F68E80A8E2C5EA3B916Dd49C6D87", message]);
 
-    const signature = await signer.signMessage(hash);
+    const signature = await addr1.signMessage(hash);
 
-    await expect(signatureVerification.connect(deployer).setSignerAddress(signer.address)).to.not.reverted;
+    await expect(signatureVerification.connect(deployer).setSignerAddress(addr1.address)).to.not.reverted;
     await expect(signatureVerification.connect(deployer).unpause()).to.not.reverted;
 
     expect(await signatureVerification.verifyBytes(ethers.hexlify(hash), signature)).to.equal(true);

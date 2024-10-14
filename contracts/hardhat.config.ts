@@ -26,7 +26,7 @@ const config: HardhatUserConfig = {
   },
   networks: {
     opSepolia: {
-      url: "https://sepolia.optimism.io",
+      url: "https://optimism-sepolia-rpc.publicnode.com",
       accounts: [process.env.PRIVATE_KEY as string],
       timeout: 2_147_483_647,
     },

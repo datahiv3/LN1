@@ -1,0 +1,3 @@
+[submodule "subgraph/graph-node"]
+	path = subgraph/graph-node
+	url = https://github.com/graphprotocol/graph-node/

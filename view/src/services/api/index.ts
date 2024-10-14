@@ -59,6 +59,9 @@ const generateServices = () => {
     user: {
       profile: `${userEndpoint}/profile`,
       getProfile: (id: string) => `${userEndpoint}/profile/${id}`,
+      getProfileCount: `${userEndpoint}/profiles/count`,
+      getProfileCountPending: `${userEndpoint}/profiles/countPending`,
+      getProfileCountVerified: `${userEndpoint}/profiles/countVerified`,
       cancel: (id: string) => `${userEndpoint}/profile/${id}`,
       profiles: `${userEndpoint}/profiles`,
       profilesMaxVersion: `${userEndpoint}/profiles/maxVersion`,

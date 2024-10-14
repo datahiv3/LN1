@@ -464,7 +464,7 @@
       },
       {
         "internalType": "address payable",
-        "name": "_whitelistAddress",
+        "name": "_whitelistedAddress",
         "type": "address"
       },
       {
@@ -706,10 +706,10 @@
   },
   {
     "inputs": [],
-    "name": "whitelist",
+    "name": "whitelisted",
     "outputs": [
       {
-        "internalType": "contract Whitelist",
+        "internalType": "contract Whitelisted",
         "name": "",
         "type": "address"
       }
@@ -719,7 +719,7 @@
   },
   {
     "inputs": [],
-    "name": "whitelistAddress",
+    "name": "whitelistedAddress",
     "outputs": [
       {
         "internalType": "address payable",

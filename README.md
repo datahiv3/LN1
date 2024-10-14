@@ -39,7 +39,7 @@ This document includes comprehensive information about the NodeOps Legalese Node
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/datahive3/LN1.git
+   git clone --recurse-submodules https://github.com/datahive3/LN1.git
    ```
 2. Navigate to the project directory:
    ```bash
@@ -88,7 +88,7 @@ pnpm test
      ```bash
      pnpm start
      ```
-   - **Expected Outcome:** This will launch the front-end interface of the application, typically accessible through `http://localhost:3000` or the specified port in your `.env` file.
+   - **Expected Outcome:** This will launch the front-end interface of the application, typically accessible through `http://localhost:5173` or the specified port in your `.env` file.
 
 3. **Verify the UI:**
    - Open a web browser and navigate to the local URL to ensure the UI is running as expected.
@@ -111,23 +111,16 @@ pnpm test
      ```bash
      pnpm start
      ```
-   - **Expected Outcome:** The server will start running, typically accessible through `http://localhost:4000` or another specified port.
+   - **Expected Outcome:** The server will start running, typically accessible through `http://localhost:3030` or another specified port.
 
 3. **Check Server Status:**
    - Verify that the server is running properly by checking the server logs for any errors or issues during the startup process.
    - Use API testing tools like Postman or curl to test the server endpoints to ensure they respond correctly.
 
-### Common Commands for Development
+### Local Node Setup
 
-- **Restarting the UI:** If you make changes to the front-end code, you can quickly restart the UI by stopping the current process and running:
-  ```bash
-  pnpm start:view
-  ```
 
-- **Restarting the Server:** For back-end updates, restart the server by stopping the running process and using:
-  ```bash
-  pnpm start:services
-  ```
+
 ## Deployment
 
 Detailed deployment steps using GitHub Actions:

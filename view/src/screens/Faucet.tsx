@@ -2,7 +2,7 @@ import { Button, Input } from "@mantine/core";
 import { Alert, Card, Stack, Typography } from "@mui/joy";
 import { ethers } from "ethers";
 import _ from "lodash";
-import React from "react";
+import { type FC, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 import { useAccount, useBalance, useTransactionConfirmations, useWriteContract } from "wagmi";
@@ -21,11 +21,11 @@ type Faucet = {
   captcha: string;
 };
 
-const Faucet: React.FC = () => {
+const Faucet: FC = () => {
   const account = useAccount();
   const { writeContract } = useWriteContract();
   const dispatch = useAppDispatch();
-  const [tx, setTx] = React.useState<`0x${string}` | undefined>(undefined);
+  const [tx, setTx] = useState<`0x${string}` | undefined>(undefined);
   const balance = useBalance({ address: account.address });
 
   const result = useTransactionConfirmations({ hash: tx });
@@ -37,10 +37,10 @@ const Faucet: React.FC = () => {
     formState: { errors },
   } = useForm<Faucet>();
 
-  const [loading, setLoading] = React.useState(false);
-  const [isSuccess, setIsSuccess] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const captchaRef = React.useRef<ReCAPTCHA | null>(null);
+  const captchaRef = useRef<ReCAPTCHA | null>(null);
 
   const captcha = watch("captcha");
 

@@ -12,7 +12,7 @@ import {NodeStaking} from "./NodeStaking.sol";
 import {StakingRewardsDistribution} from "./StakingRewardsDistribution.sol";
 import {TestnetFaucet} from "./TestnetFaucet.sol";
 import {SignatureVerification} from "./utils/SignatureVerification.sol";
-import {Whitelist} from "./Whitelist.sol";
+import {Whitelisted} from "./Whitelisted.sol";
 import "hardhat/console.sol";
 
 /// @custom:security-contact pierre@p10node.com
@@ -24,7 +24,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     address payable public dataHiveTokenAddress;
     address payable public signatureVerificationAddress;
 
-    address payable public whitelistAddress;
+    address payable public whitelistedAddress;
     address payable public nodeFeeManagerAddress;
     address payable public nodeStakingAddress;
     address payable public stakingRewardsDistributionAddress;
@@ -34,7 +34,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     DataHiveToken public dataHiveToken;
     SignatureVerification public signatureVerification;
 
-    Whitelist public whitelist;
+    Whitelisted public whitelisted;
     NodeFeeManager public nodeFeeManager;
     NodeStaking public nodeStaking;
     StakingRewardsDistribution public stakingRewardsDistribution;
@@ -63,7 +63,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     function setGeneral(
         address payable _dataHiveTokenAddress,
         address payable _signatureVerificationAddress,
-        address payable _whitelistAddress,
+        address payable _whitelistedAddress,
         address payable _nodeFeeManagerAddress,
         address payable _nodeStakingAddress,
         address payable _stakingRewardsDistributionAddress,
@@ -83,7 +83,7 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
             _signatureVerificationAddress
         );
 
-        whitelist = Whitelist(_whitelistAddress);
+        whitelisted = Whitelisted(_whitelistedAddress);
         nodeFeeManager = NodeFeeManager(_nodeFeeManagerAddress);
         nodeStaking = NodeStaking(_nodeStakingAddress);
         stakingRewardsDistribution = StakingRewardsDistribution(
@@ -127,10 +127,10 @@ contract Registry is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
     function setWhitelist(
         address payable _address
     ) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        whitelistAddress = _address;
+        whitelistedAddress = _address;
         contractAddresses["whitelist"] = _address;
 
-        whitelist = Whitelist(_address);
+        whitelisted = Whitelisted(_address);
     }
 
     function setNodeFeeManager(

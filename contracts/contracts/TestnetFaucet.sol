@@ -12,12 +12,18 @@ import {Registry} from "./Registry.sol";
 import {SignatureVerification} from "./utils/SignatureVerification.sol";
 
 /// @custom:security-contact pierre@p10node.com
-contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
+contract TestnetFaucet is
+    Initializable,
+    AccessControlUpgradeable,
+    PausableUpgradeable,
+    RegistryUpgradable,
+    WithdrawableUpgradable,
+    UUPSUpgradeable
+{
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
-    mapping(address => uint256) public firstFaucet;
-    mapping(address => uint256) public lastFaucet;
+    mapping(address => uint256) public firstFaucetTime;
     mapping(address => uint256) public totalFaucet;
 
     uint256 constant DAY = 1 days;
@@ -56,9 +62,15 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
         _unpause();
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
-    function _authorizeRegistry() internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeRegistry()
+        internal
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {}
 
     function setRegistry(address _registryAddress) internal override {
         registry = Registry(_registryAddress);
@@ -80,7 +92,10 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
         emit Faucet(to, 1);
     }
 
-    function proofFaucet(string memory randomText, bytes memory signature) public whenNotPaused limitedTime {
+    function proofFaucet(
+        string memory randomText,
+        bytes memory signature
+    ) public whenNotPaused limitedTime {
         SignatureVerification sign = registry.signatureVerification();
 
         bytes32 message = getMessageHash(msg.sender, randomText);
@@ -89,7 +104,6 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
         require(!usedSignature[signature], "Signature already used");
         usedSignature[signature] = true;
 
-        lastFaucet[msg.sender] = block.timestamp;
         totalFaucet[msg.sender] += 1;
 
         _faucet(msg.sender, 1);
@@ -99,17 +113,23 @@ contract TestnetFaucet is Initializable, AccessControlUpgradeable, PausableUpgra
 
     modifier limitedTime() {
         address minter = msg.sender;
-        if (lastFaucet[minter] - firstFaucet[minter] > DAY) {
-            firstFaucet[minter] = block.timestamp;
+        if (block.timestamp - firstFaucetTime[minter] > DAY) {
+            firstFaucetTime[minter] = block.timestamp;
             totalFaucet[minter] = 0;
         }
 
         // max = 4 because the first mint is at 0
-        require(totalFaucet[minter] < (5 - 1), "You can only mint 5 tokens per day");
+        require(
+            totalFaucet[minter] < (5 - 1),
+            "You can only mint 5 tokens per day"
+        );
         _;
     }
 
-    function getMessageHash(address sender, string memory randomText) public pure returns (bytes32) {
+    function getMessageHash(
+        address sender,
+        string memory randomText
+    ) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(sender, randomText));
     }
 }

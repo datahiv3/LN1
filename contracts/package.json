@@ -11,11 +11,12 @@
     "compile": "hardhat compile",
     "run:testnet": "hardhat run --network opSepolia",
     "run:local": "hardhat run --network localhost",
-    "node": "hardhat node",
+    "node": "hardhat node --hostname 0.0.0.0",
     "type": "hardhat typechain",
     "test": "hardhat test",
     "abi": "hardhat export-abi",
     "abi:cp": "cp -r abi ../view/src/services/eth/",
+    "abi:whitelisted": "cp -r abi/Whitelisted.json ../subgraph/whitelisted/abis/Contract.json",
     "deploy": "hardhat ignition deploy --network opSepolia",
     "deploy:local": "hardhat ignition deploy --network localhost",
     "v": "hardhat ignition visualize"

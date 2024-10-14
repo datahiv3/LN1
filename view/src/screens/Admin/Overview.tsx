@@ -7,14 +7,14 @@ const Overview: React.FC = () => {
     <>
       <Stack spacing={2}>
         <Card>
-          <div>
-            <div>
-              Go to <Link to="/admin/whitelisted">Whitelisted</Link>
-            </div>
-            <div>
-              Go to <Link to="/admin/kyc">KYC</Link>
-            </div>
-          </div>
+          <ul>
+            <li>
+              <Link to="/admin/whitelisted">Whitelisted</Link>
+            </li>
+            <li>
+              <Link to="/admin/kyc">KYC</Link>
+            </li>
+          </ul>
         </Card>
       </Stack>
     </>

@@ -2,3 +2,4 @@ packages:
   - "contracts"
   - "services"
   - "view"
+  - "subgraph/whitelisted"

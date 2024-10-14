@@ -1,3 +1,4 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { MantineProvider, createTheme } from "@mantine/core";
 import { useStore } from "@nanostores/react";
 import { RainbowKitAuthenticationProvider, RainbowKitProvider, getDefaultConfig } from "@rainbow-me/rainbowkit";
@@ -5,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type React from "react";
 import { WagmiProvider } from "wagmi";
 import { hardhat, optimismSepolia } from "wagmi/chains";
-import { isDev } from "../../config";
+import { isDev, config as rootConfig, subgraphs } from "../../config";
 import { authStatus } from "../../features/auth";
 import { authenticationAdapter } from "../../services/eth/authenticationAdapter";
 import PopupProvider from "../Popup/PopupProvider";
@@ -20,7 +21,10 @@ const config = getDefaultConfig({
   ssr: false,
 });
 
+console.log(rootConfig.stage, "longheo");
+
 const queryClient = new QueryClient();
+const apolloClient = new ApolloClient({ uri: subgraphs[rootConfig.stage].whitelisted, cache: new InMemoryCache() });
 
 const theme = createTheme({});
 
@@ -29,20 +33,22 @@ const App: React.FC = () => {
 
   return (
     <WagmiProvider reconnectOnMount={true} config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitAuthenticationProvider adapter={authenticationAdapter} status={$authStatus}>
-          <RainbowKitProvider>
-            <MantineProvider theme={theme} forceColorScheme="light">
-              <PopupProvider>
-                <AppState>
-                  <Router />
-                </AppState>
-                <Toast />
-              </PopupProvider>
-            </MantineProvider>
-          </RainbowKitProvider>
-        </RainbowKitAuthenticationProvider>
-      </QueryClientProvider>
+      <ApolloProvider client={apolloClient}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitAuthenticationProvider adapter={authenticationAdapter} status={$authStatus}>
+            <RainbowKitProvider>
+              <MantineProvider theme={theme} forceColorScheme="light">
+                <PopupProvider>
+                  <AppState>
+                    <Router />
+                  </AppState>
+                  <Toast />
+                </PopupProvider>
+              </MantineProvider>
+            </RainbowKitProvider>
+          </RainbowKitAuthenticationProvider>
+        </QueryClientProvider>
+      </ApolloProvider>
     </WagmiProvider>
   );
 };

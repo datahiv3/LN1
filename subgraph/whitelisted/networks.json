@@ -1,0 +1,14 @@
+{
+  "localhost": {
+    "Contract": {
+      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "startBlock": 0
+    }
+  },
+  "optimism-sepolia": {
+    "Contract": {
+      "address": "0x10E0fd5cd2FC69CE0ccD3c7fdB76a5bE86b6F267",
+      "startBlock": 18536430
+    }
+  }
+}

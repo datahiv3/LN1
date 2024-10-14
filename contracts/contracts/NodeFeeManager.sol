@@ -140,6 +140,10 @@ contract NodeFeeManager is
 
     function payFee(address _token) public {
         require(allowToken[_token], "token not allowed");
+        require(
+            registry.whitelisted().whitelist(msg.sender),
+            "account not whitelisted"
+        );
 
         IERC20 token = IERC20(_token);
 

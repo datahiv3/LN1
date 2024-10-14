@@ -22,7 +22,7 @@ export const LazyNode = create(lazy(() => import("../../screens/Nodes/Node")));
 export const LazyCreate = create(lazy(() => import("../../screens/Nodes/Create")));
 
 export const LazyAdminOverview = create(lazy(() => import("../../screens/Admin/Overview")));
-export const LazyAdminWhitelist = create(lazy(() => import("../../screens/Admin/Whitelist")));
+export const LazyAdminWhitelisted = create(lazy(() => import("../../screens/Admin/Whitelisted")));
 export const LazyAdminFee = create(lazy(() => import("../../screens/Admin/Fee")));
 export const LazyAdminStaking = create(lazy(() => import("../../screens/Admin/Staking")));
 export const LazyAdminNodes = create(lazy(() => import("../../screens/Admin/Nodes")));

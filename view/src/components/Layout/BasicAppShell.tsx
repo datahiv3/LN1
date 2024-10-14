@@ -20,7 +20,7 @@ export function BasicAppShell() {
       <AppShell.Navbar onClick={toggle} p="lg">
         <Sidebar />
       </AppShell.Navbar>
-      <AppShell.Main>
+      <AppShell.Main className="pb-[200px]">
         <Outlet />
       </AppShell.Main>
     </AppShell>
