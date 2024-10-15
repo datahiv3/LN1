@@ -6,8 +6,8 @@
     "build": "graph build",
     "deploy:studio": "graph deploy --studio ln1 --network=optimism-sepolia",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ ln1/whitelisted",
-    "create-local": "graph create --node http://localhost:8020/ --network=localhost ln1/whitelisted",
-    "remove-local": "graph remove --node http://localhost:8020/ --network=localhost ln1/whitelisted",
+    "create-local": "graph create --node http://localhost:8020/ ln1/whitelisted",
+    "remove-local": "graph remove --node http://localhost:8020/ ln1/whitelisted",
     "deploy-local": "graph deploy --node http://localhost:8020/ --network=localhost --ipfs http://localhost:5001 ln1/whitelisted",
     "test": "graph test"
   },

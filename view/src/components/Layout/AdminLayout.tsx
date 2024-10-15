@@ -46,9 +46,6 @@ const AdminLayout: React.FC = () => {
             <Tab disableIndicator value="/admin/staking">
               Node Staking
             </Tab>
-            <Tab disableIndicator value="/admin/nodes">
-              Nodes
-            </Tab>
           </TabList>
         </Tabs>
         <div>

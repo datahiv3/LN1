@@ -51,24 +51,24 @@ deployer address: 0xB20E2539706BD724A1F17E85A2D2fE0Ff7359514
 ┌────────────────────────────┬──────────────────────────────────────────────┐
 │ (index)                    │ Values                                       │
 ├────────────────────────────┼──────────────────────────────────────────────┤
-│ token                      │ '0x91fB42BF01519468bd93D0B06D324D01243CF959' │
-│ registry                   │ '0xb48e7948a00aE2F8E1D1E58724f40012BcfcAEDC' │
-│ sign                       │ '0x6c5fD19b95DA2103f287d6032aB22fF57176e551' │
-│ faucet                     │ '0x2DaA4af4c4b53457443bfcCEE21daa319df359Bd' │
-│ whitelisted                │ '0x10E0fd5cd2FC69CE0ccD3c7fdB76a5bE86b6F267' │
-│ nodeFeeManager             │ '0xE0c9D392598C11c7Cb6791A2a7ebA0e3Ddc5E406' │
-│ nodeStaking                │ '0xE5B34D6DA17E206b7db46daC57539C2d09261581' │
-│ stakingRewardsDistribution │ '0xbd261C9602e4DbF3F61Eae36c9a3085D37f2c727' │
+│ token                      │ '0x063D9e366Ac8e1Cd0b5c12161b9a4065a7Ae814E' │
+│ registry                   │ '0x4C5F08597295f696880C8eE01123FE805735ed03' │
+│ sign                       │ '0x22E33bA02BEB546c2cF722C6E72a83EE3c8Fee98' │
+│ faucet                     │ '0xd76D14Ea60a6d981F70A0c87bc7F5aeE0B0339Ba' │
+│ whitelisted                │ '0xE74E02Cb6a1fc40fd376dDD8a8BF32D3dabc171A' │
+│ nodeFeeManager             │ '0x203cA8a6fb98C7252409F5474c64CB828024ECEB' │
+│ nodeStaking                │ '0x680a14F40b3E7F6f62668c5DFaf6d0d1eF08500A' │
+│ stakingRewardsDistribution │ '0xeE0D60375Fe5B33d7B5785f3BF9BD7Db2f2322C4' │
 └────────────────────────────┴──────────────────────────────────────────────┘
 ┌───────────────────────────────────────┬──────────────────────────────────────────────┐
 │ (index)                               │ Values                                       │
 ├───────────────────────────────────────┼──────────────────────────────────────────────┤
-│ registryGetToken                      │ '0x91fB42BF01519468bd93D0B06D324D01243CF959' │
-│ registryGetSign                       │ '0x6c5fD19b95DA2103f287d6032aB22fF57176e551' │
-│ registryGetFaucet                     │ '0x2DaA4af4c4b53457443bfcCEE21daa319df359Bd' │
-│ registryGetWhitelisted                │ '0x10E0fd5cd2FC69CE0ccD3c7fdB76a5bE86b6F267' │
-│ registryGetNodeFeeManager             │ '0xE0c9D392598C11c7Cb6791A2a7ebA0e3Ddc5E406' │
-│ registryGetNodeStaking                │ '0xE5B34D6DA17E206b7db46daC57539C2d09261581' │
-│ registryGetStakingRewardsDistribution │ '0xbd261C9602e4DbF3F61Eae36c9a3085D37f2c727' │
+│ registryGetToken                      │ '0x063D9e366Ac8e1Cd0b5c12161b9a4065a7Ae814E' │
+│ registryGetSign                       │ '0x22E33bA02BEB546c2cF722C6E72a83EE3c8Fee98' │
+│ registryGetFaucet                     │ '0xd76D14Ea60a6d981F70A0c87bc7F5aeE0B0339Ba' │
+│ registryGetWhitelisted                │ '0xE74E02Cb6a1fc40fd376dDD8a8BF32D3dabc171A' │
+│ registryGetNodeFeeManager             │ '0x203cA8a6fb98C7252409F5474c64CB828024ECEB' │
+│ registryGetNodeStaking                │ '0x680a14F40b3E7F6f62668c5DFaf6d0d1eF08500A' │
+│ registryGetStakingRewardsDistribution │ '0xeE0D60375Fe5B33d7B5785f3BF9BD7Db2f2322C4' │
 └───────────────────────────────────────┴──────────────────────────────────────────────┘
 ```

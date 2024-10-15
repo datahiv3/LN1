@@ -119,7 +119,16 @@ pnpm test
 
 ### Local Node Setup
 
+cd to `contracts`
 
+```bash
+pnpm node
+```
+
+### Local Subgraph Setup
+
+```bash
+```
 
 ## Deployment
 

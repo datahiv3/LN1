@@ -27,6 +27,21 @@ contract NodeStaking is
     Registry public registry;
 
     mapping(address => bool) public tokens;
+    mapping(address => mapping(address => uint256)) public stakedAmount;
+
+    event Stake(
+        uint256 indexed nodeId,
+        address indexed account,
+        address indexed token,
+        uint256 amount
+    );
+
+    event Unstake(
+        uint256 indexed nodeId,
+        address indexed account,
+        address indexed token,
+        uint256 amount
+    );
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -77,11 +92,39 @@ contract NodeStaking is
         withdrawERC20(registry.dataHiveTokenAddress());
     }
 
-    function addToken(address token) public onlyRole(STAKING_ADMIN_ROLE) {
+    function addAllowToken(address token) public onlyRole(STAKING_ADMIN_ROLE) {
         tokens[token] = true;
     }
 
-    function removeToken(address token) public onlyRole(STAKING_ADMIN_ROLE) {
+    function removeAllowToken(
+        address token
+    ) public onlyRole(STAKING_ADMIN_ROLE) {
         tokens[token] = false;
+    }
+
+    function stake(
+        uint256 nodeId,
+        address tokenAddress,
+        uint256 tokenAmount
+    ) public whenNotPaused {
+        require(
+            nodeId <= registry.nodeFeeManager().nodeId(),
+            "NodeStaking: Node does not exist"
+        );
+
+        require(tokens[tokenAddress], "NodeStaking: Token not allowed");
+
+        uint256 amount = IERC20(tokenAddress).balanceOf(msg.sender);
+        require(amount >= tokenAmount, "NodeStaking: Insufficient balance");
+
+        IERC20(tokenAddress).transferFrom(
+            msg.sender,
+            address(this),
+            tokenAmount
+        );
+
+        stakedAmount[msg.sender][tokenAddress] += tokenAmount;
+
+        emit Stake(nodeId, msg.sender, tokenAddress, amount);
     }
 }

@@ -25,21 +25,24 @@ contract NodeFeeManager is
 
     Registry public registry;
 
+    // token -> bool
     mapping(address => bool) public allowToken;
+    // token -> fee
     mapping(address => uint256) public fee;
 
     event AllowToken(address indexed token, bool allow);
     event SetFee(address indexed token, uint256 fee);
 
-    mapping(address => mapping(uint256 => mapping(address => uint256)))
-        public paidFees;
-    // address -> node id -> token -> amount
-    mapping(address => mapping(uint256 => address)) public paidToken;
-    // address -> node id -> token
-    mapping(address => mapping(uint256 => bool)) public nodes;
-    // address -> node id -> bool
+    mapping(uint256 => address) public nodeOwner;
+    // node id -> owner
+    mapping(uint256 => bool) public nodeStatus;
+    // node id -> bool
+    mapping(uint256 => address) public paidBy;
+    // node id -> token
+    mapping(uint256 => mapping(address => uint256)) public paidAmount;
+    // node id -> token -> amount
 
-    mapping(address => uint256) nodeCount;
+    uint256 public nodeId;
 
     event PaidFee(
         address indexed account,
@@ -119,7 +122,7 @@ contract NodeFeeManager is
         address _token,
         uint256 _fee
     ) public onlyRole(FEE_MANAGER_ROLE) {
-        allowToken[_token] = true;
+        require(allowToken[_token], "token not allowed");
         fee[_token] = _fee;
 
         emit AllowToken(_token, true);
@@ -127,7 +130,7 @@ contract NodeFeeManager is
     }
 
     function removeFee(address _token) public onlyRole(FEE_MANAGER_ROLE) {
-        allowToken[_token] = false;
+        require(allowToken[_token], "token not allowed");
         fee[_token] = 0;
 
         emit AllowToken(_token, false);
@@ -138,12 +141,13 @@ contract NodeFeeManager is
         return fee[_token];
     }
 
-    function payFee(address _token) public {
-        require(allowToken[_token], "token not allowed");
+    function payFee(address _token) public whenNotPaused {
         require(
             registry.whitelisted().whitelist(msg.sender),
             "account not whitelisted"
         );
+
+        require(allowToken[_token], "token not allowed");
 
         IERC20 token = IERC20(_token);
 
@@ -153,36 +157,35 @@ contract NodeFeeManager is
         );
         token.transferFrom(msg.sender, address(this), fee[_token]);
 
-        uint256 nodeId = nodeCount[msg.sender];
-
-        paidToken[msg.sender][nodeId] = _token;
-        paidFees[msg.sender][nodeId][_token] = fee[_token];
-        nodes[msg.sender][nodeId] = true;
-
-        nodeCount[msg.sender]++;
+        nodeOwner[nodeId] = msg.sender;
+        nodeStatus[nodeId] = true;
+        paidBy[nodeId] = msg.sender;
+        paidAmount[nodeId][_token] = fee[_token];
 
         emit PaidFee(msg.sender, nodeId, _token, fee[_token]);
+
+        nodeId++;
     }
 
-    function refundFee(
-        address _account,
-        uint256 nodeId
-    ) public onlyRole(FEE_MANAGER_ROLE) {
-        require(nodes[_account][nodeId], "node not exist");
+    function refundFee(uint256 _nodeId) public onlyRole(FEE_MANAGER_ROLE) {
+        address _account = nodeOwner[_nodeId];
 
-        address tokenAddress = paidToken[_account][nodeId];
+        require(
+            registry.whitelisted().whitelist(_account),
+            "account not whitelisted"
+        );
+        require(_nodeId <= nodeId, "node not exist");
+        require(nodeOwner[_nodeId] == _account, "node not owned by account");
+        require(nodeStatus[_nodeId], "node refunded");
+
+        address tokenAddress = paidBy[_nodeId];
         IERC20 token = IERC20(tokenAddress);
 
-        uint256 refund = paidFees[_account][nodeId][tokenAddress];
+        uint256 refund = paidAmount[_nodeId][tokenAddress];
         token.transfer(_account, refund);
 
-        nodes[_account][nodeId] = false;
+        nodeStatus[_nodeId] = false;
 
-        emit RefundFee(
-            _account,
-            nodeId,
-            tokenAddress,
-            paidFees[_account][nodeId][tokenAddress]
-        );
+        emit RefundFee(_account, _nodeId, tokenAddress, refund);
     }
 }

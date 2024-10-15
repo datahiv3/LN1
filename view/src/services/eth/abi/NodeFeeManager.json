@@ -524,19 +524,46 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
+    "inputs": [],
+    "name": "nodeId",
+    "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
     ],
-    "name": "nodes",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "nodeOwner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "nodeStatus",
     "outputs": [
       {
         "internalType": "bool",
@@ -550,11 +577,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
@@ -565,7 +587,7 @@
         "type": "address"
       }
     ],
-    "name": "paidFees",
+    "name": "paidAmount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -579,17 +601,12 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
     ],
-    "name": "paidToken",
+    "name": "paidBy",
     "outputs": [
       {
         "internalType": "address",
@@ -649,13 +666,8 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_account",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
-        "name": "nodeId",
+        "name": "_nodeId",
         "type": "uint256"
       }
     ],

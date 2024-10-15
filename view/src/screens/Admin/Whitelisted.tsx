@@ -191,7 +191,7 @@ const Whitelisted: React.FC = () => {
         <div>
           {isSuccess && (
             <div>
-              Added to whitelist: <Code copy={tx}>{tx}</Code>
+              Action Tx: <Code copy={tx}>{tx}</Code>
             </div>
           )}
         </div>

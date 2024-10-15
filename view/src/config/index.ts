@@ -14,7 +14,7 @@ export const subgraphs: { [key: string]: { whitelisted: string } } = {
     whitelisted: "",
   },
   staging: {
-    whitelisted: "https://api.studio.thegraph.com/query/57647/ln1/v0.0.1",
+    whitelisted: "https://api.studio.thegraph.com/query/57647/ln1/v0.0.2",
   },
   development: {
     whitelisted: "http://localhost:8000/subgraphs/name/ln1/whitelisted",
@@ -35,14 +35,14 @@ export const devContracts: { [key: string]: `0x${string}` } = {
 };
 
 export const stagingContracts: { [key: string]: `0x${string}` } = {
-  DataHiveToken: "0x91fB42BF01519468bd93D0B06D324D01243CF959",
-  SignatureVerification: "0x6c5fD19b95DA2103f287d6032aB22fF57176e551",
-  Registry: "0xb48e7948a00aE2F8E1D1E58724f40012BcfcAEDC",
-  TestnetFaucet: "0x2DaA4af4c4b53457443bfcCEE21daa319df359Bd",
-  Whitelisted: "0x10E0fd5cd2FC69CE0ccD3c7fdB76a5bE86b6F267",
-  NodeFeeManager: "0xE0c9D392598C11c7Cb6791A2a7ebA0e3Ddc5E406",
-  NodeStaking: "0xE5B34D6DA17E206b7db46daC57539C2d09261581",
-  StakingRewardsDistribution: "0xbd261C9602e4DbF3F61Eae36c9a3085D37f2c727",
+  DataHiveToken: "0x063D9e366Ac8e1Cd0b5c12161b9a4065a7Ae814E",
+  SignatureVerification: "0x22E33bA02BEB546c2cF722C6E72a83EE3c8Fee98",
+  Registry: "0x4C5F08597295f696880C8eE01123FE805735ed03",
+  TestnetFaucet: "0xd76D14Ea60a6d981F70A0c87bc7F5aeE0B0339Ba",
+  Whitelisted: "0xE74E02Cb6a1fc40fd376dDD8a8BF32D3dabc171A",
+  NodeFeeManager: "0x203cA8a6fb98C7252409F5474c64CB828024ECEB",
+  NodeStaking: "0x680a14F40b3E7F6f62668c5DFaf6d0d1eF08500A",
+  StakingRewardsDistribution: "0xeE0D60375Fe5B33d7B5785f3BF9BD7Db2f2322C4",
 };
 
 export const productionContracts: { [key: string]: `0x${string}` } = {

@@ -1,5 +1,5 @@
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
-import { SiweMessage } from "siwe";
+import { createSiweMessage } from "viem/siwe";
 import { authStatus, isAdmin, setAuthStatus, token, tokenStore } from "../../features/auth";
 import { api, getServices, setToken } from "../api";
 import { getProfiles } from "../api/profile/getProfiles";
@@ -12,7 +12,7 @@ export const authenticationAdapter = createAuthenticationAdapter({
   },
 
   createMessage: ({ nonce, address, chainId }) => {
-    return new SiweMessage({
+    return createSiweMessage({
       domain: window.location.host,
       address,
       statement: "Sign in with Ethereum to the app.",
@@ -21,10 +21,6 @@ export const authenticationAdapter = createAuthenticationAdapter({
       chainId,
       nonce,
     });
-  },
-
-  getMessageBody: ({ message }) => {
-    return message.prepareMessage();
   },
 
   verify: async ({ message, signature }) => {

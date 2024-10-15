@@ -21,8 +21,6 @@ const config = getDefaultConfig({
   ssr: false,
 });
 
-console.log(rootConfig.stage, "longheo");
-
 const queryClient = new QueryClient();
 const apolloClient = new ApolloClient({ uri: subgraphs[rootConfig.stage].whitelisted, cache: new InMemoryCache() });
 
