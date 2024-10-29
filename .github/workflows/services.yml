@@ -5,7 +5,7 @@ on:
     branches: [releases/**]
     paths:
       - "services/**"
-      - ".github/workflows/production/services.yml"
+      - ".github/workflows/services.yml"
       - "services.Dockerfile"
   workflow_dispatch:
 

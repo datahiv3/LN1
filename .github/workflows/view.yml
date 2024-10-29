@@ -5,7 +5,7 @@ on:
     branches: [releases/**]
     paths:
       - "view/**"
-      - ".github/workflows/production/view.yml"
+      - ".github/workflows/view.yml"
   workflow_dispatch:
 
 env:
