@@ -97,7 +97,7 @@ const AdminFee: React.FC = () => {
             <FormHelperText>{errors.fee?.message}</FormHelperText>
           </FormControl>
 
-          <Button disabled={loading} type="submit" placeholder="">
+          <Button disabled={loading} type="submit">
             Change
           </Button>
         </div>

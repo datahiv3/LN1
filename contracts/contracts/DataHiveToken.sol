@@ -58,7 +58,10 @@ contract DataHiveToken is
         _unpause();
     }
 
-    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) whenNotPaused {
+    function mint(
+        address to,
+        uint256 amount
+    ) public onlyRole(MINTER_ROLE) whenNotPaused {
         _mint(to, amount);
     }
 
@@ -71,16 +74,36 @@ contract DataHiveToken is
         return "mode=timestamp";
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
     function _authorizeWithdraw() internal override onlyRole(WITHDRAW_ROLE) {}
 
     // The following functions are overrides required by Solidity.
-    function _update(address from, address to, uint256 value) internal override(ERC20Upgradeable, ERC20PausableUpgradeable, ERC20VotesUpgradeable) {
+    function _update(
+        address from,
+        address to,
+        uint256 value
+    )
+        internal
+        override(
+            ERC20Upgradeable,
+            ERC20PausableUpgradeable,
+            ERC20VotesUpgradeable
+        )
+    {
         super._update(from, to, value);
     }
 
-    function nonces(address owner) public view override(ERC20PermitUpgradeable, NoncesUpgradeable) returns (uint256) {
+    function nonces(
+        address owner
+    )
+        public
+        view
+        override(ERC20PermitUpgradeable, NoncesUpgradeable)
+        returns (uint256)
+    {
         return super.nonces(owner);
     }
 }

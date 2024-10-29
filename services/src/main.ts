@@ -5,6 +5,7 @@ import helmet from "koa-helmet";
 import koaLogger from "koa-pino-logger";
 import { isProduction } from "./config";
 import { adminGetAllUserProfiles } from "./controllers/admin/allUserProfiles";
+import { allUserWhitelistRequests } from "./controllers/admin/allUserWhitelistRequests";
 import { adminApproveProfile, adminRejectProfile } from "./controllers/admin/approveProfile";
 import { adminGetUserProfile } from "./controllers/admin/getUserProfile";
 import { adminGetUserProfileMaxVersion } from "./controllers/admin/getUserProfileMaxVersion";
@@ -25,6 +26,8 @@ import { getProfiles } from "./controllers/user/getProfiles";
 import { getProfilesCount } from "./controllers/user/getProfilesCount";
 import { getProfilesCountPending } from "./controllers/user/getProfilesCountPending";
 import { getProfilesCountVerified } from "./controllers/user/getProfilesCountVerified";
+import { getWhitelistRequest } from "./controllers/user/getWhitelistRequest";
+import { userWhitelistRequest } from "./controllers/whitelist/request";
 import { cronInit } from "./cron/index";
 import { client } from "./db";
 import { authMiddleware } from "./middlewares/auth";
@@ -96,6 +99,7 @@ admin.get("/user/all/profiles", requireAdminMiddleware, adminGetAllUserProfiles)
 admin.get("/user/profile/maxVersion", requireAdminMiddleware, adminGetUserProfileMaxVersion);
 admin.post("/user/profile/approve/:id", requireAdminMiddleware, adminApproveProfile);
 admin.post("/user/profile/reject/:id", requireAdminMiddleware, adminRejectProfile);
+admin.get("/user/whitelist/requests", requireAdminMiddleware, allUserWhitelistRequests);
 router.use(admin.routes());
 
 // user
@@ -108,6 +112,8 @@ user.get("/profile/:id", requireAuthMiddleware, getProfile);
 user.post("/profile", requireAuthMiddleware, verifySignatureMiddleware, createProfile);
 user.delete("/profile/:id", requireAuthMiddleware, cancelProfile);
 user.get("/profiles/maxVersion", requireAuthMiddleware, getProfileMaxVersion);
+user.post("/whitelistRequest", requireAuthMiddleware, recaptchaMiddleware, verifySignatureMiddleware, userWhitelistRequest);
+user.get("/whitelistRequest", requireAuthMiddleware, getWhitelistRequest);
 router.use(user.routes());
 
 app.use(router.routes());

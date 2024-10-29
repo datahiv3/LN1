@@ -20,8 +20,8 @@ export type Profile = {
   kycStatus: KYCStatus;
 
   createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 
   evmAddress: string;
   version: number;

@@ -55,6 +55,7 @@ const generateServices = () => {
       approveProfile: (id: string) => `${adminEndpoint}/user/profile/approve/${id}`,
       rejectProfile: (id: string) => `${adminEndpoint}/user/profile/reject/${id}`,
       getUserProfile: (id: string) => `${adminEndpoint}/user/profile/${id}`,
+      allWhitelistRequests: `${adminEndpoint}/user/whitelist/requests`,
     },
     user: {
       profile: `${userEndpoint}/profile`,
@@ -65,6 +66,7 @@ const generateServices = () => {
       cancel: (id: string) => `${userEndpoint}/profile/${id}`,
       profiles: `${userEndpoint}/profiles`,
       profilesMaxVersion: `${userEndpoint}/profiles/maxVersion`,
+      whitelistRequest: `${userEndpoint}/whitelistRequest`,
     },
   };
 };

@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: Contract
-    network: optimism-sepolia
+    network: localhost
     source:
       abi: Contract
-      address: "0xE74E02Cb6a1fc40fd376dDD8a8BF32D3dabc171A"
-      startBlock: 18599533
+      address: "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318"
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

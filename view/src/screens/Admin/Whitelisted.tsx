@@ -2,14 +2,18 @@ import { useQuery } from "@apollo/client";
 import { Button, Input } from "@mantine/core";
 import { Card, FormControl, FormHelperText, Stack, Typography } from "@mui/joy";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { useStore } from "@nanostores/react";
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { useWriteContract } from "wagmi";
 import { useAppDispatch } from "../../app/hooks";
 import Code from "../../components/Layout/Code";
 import { setToast } from "../../components/Toast/toastReducer";
 import { contracts } from "../../config";
+import { allWhitelistRequests } from "../../features/user";
+import { getServices } from "../../services/api";
+import { getAllWhitelistRequests } from "../../services/api/profile/getProfiles";
 import { ALL_WHITELISTED_QUERY, type AddWhitelist, parseWhitelistData } from "../../services/api/whitelisted/parseWhitelist";
 import WhitelistedABI from "../../services/eth/abi/Whitelisted.json";
 
@@ -28,9 +32,14 @@ const Whitelisted: React.FC = () => {
     }[];
   }>(ALL_WHITELISTED_QUERY, {
     fetchPolicy: "network-only",
-    pollInterval: 1000,
+    pollInterval: 5000,
   });
 
+  useEffect(() => {
+    getAllWhitelistRequests(getServices());
+  }, []);
+
+  const $allWhitelistRequests = useStore(allWhitelistRequests);
   const dispatch = useAppDispatch();
   const { writeContract } = useWriteContract();
 
@@ -153,6 +162,75 @@ const Whitelisted: React.FC = () => {
     },
   ];
 
+  const whitelistRequestColumns: GridColDef<{ evmAddress: string; additional: string; id: number }[][number]>[] = [
+    {
+      field: "evmAddress",
+      headerName: "EVM Address",
+      sortable: false,
+      minWidth: 370,
+    },
+    {
+      field: "additional",
+      headerName: "Additional",
+      sortable: false,
+      minWidth: 200,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      sortable: false,
+      minWidth: 120,
+      renderCell: (params) => {
+        return (
+          <Button
+            color="blue"
+            variant="outline"
+            size="xs"
+            onClick={() => {
+              writeContract(
+                {
+                  abi: WhitelistedABI,
+                  address: contracts.Whitelisted,
+                  functionName: "addWhitelist",
+                  args: [params.row.evmAddress],
+                },
+                {
+                  onSuccess: (res) => {
+                    setTx(res);
+
+                    setIsSuccess(true);
+                    setLoading(false);
+
+                    refetch();
+                  },
+
+                  onSettled: () => {},
+
+                  onError: (er) => {
+                    setLoading(false);
+
+                    console.error(er);
+
+                    dispatch(
+                      setToast({
+                        show: true,
+                        title: "",
+                        message: er.message.split("\n")?.[0] || er.message,
+                        type: "error",
+                      }),
+                    );
+                  },
+                },
+              );
+            }}
+          >
+            Approve
+          </Button>
+        );
+      },
+    },
+  ];
+
   return (
     <Stack spacing={2}>
       <Card>
@@ -164,7 +242,7 @@ const Whitelisted: React.FC = () => {
               <FormHelperText>{errors.address?.message}</FormHelperText>
             </FormControl>
 
-            <Button disabled={loading} type="submit" placeholder="">
+            <Button disabled={loading} type="submit">
               Add
             </Button>
           </div>
@@ -174,6 +252,39 @@ const Whitelisted: React.FC = () => {
           <DataGrid
             rows={parseWhitelistData(data)?.whitelists?.map((item, index) => ({ ...item, id: index })) || []}
             columns={columns}
+            disableColumnResize
+            density="compact"
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 50,
+                },
+              },
+            }}
+            pageSizeOptions={[50, 100]}
+            disableRowSelectionOnClick
+          />
+        </div>
+
+        <div>Whitelist Requests</div>
+
+        <div>
+          <DataGrid
+            rows={
+              $allWhitelistRequests.data
+                .map((item, index) => {
+                  const wl = parseWhitelistData(data)?.whitelists;
+                  if (wl) {
+                    if (wl.some((i) => i.account.toLocaleLowerCase() === item.evmAddress.toLocaleLowerCase())) {
+                      return null;
+                    }
+                  }
+
+                  return { ...item, id: index };
+                })
+                .filter((item) => !!item) || []
+            }
+            columns={whitelistRequestColumns}
             disableColumnResize
             density="compact"
             initialState={{

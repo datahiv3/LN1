@@ -117,7 +117,7 @@ const Faucet: FC = () => {
                   <div className="flex gap-2">
                     <Input placeholder="Recipient Wallet Address" value={account.address} disabled className="flex-1" />
 
-                    <Button disabled={loading || !captcha} type="submit" placeholder="">
+                    <Button disabled={loading || !captcha} type="submit">
                       Faucet
                     </Button>
                   </div>

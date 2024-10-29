@@ -26,6 +26,14 @@ class TelegramBot {
   public setDefaultChat(id: number) {
     this.defaultChat = id;
   }
+
+  public async sendMessage(chatId: number, text: string) {
+    try {
+      await this.bot.telegram.sendMessage(chatId, text);
+    } catch (error) {
+      logger.error(`TelegramBot sendMessage error: ${error}`);
+    }
+  }
 }
 
 export default TelegramBot;

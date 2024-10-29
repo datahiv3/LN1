@@ -1,10 +1,18 @@
 import _ from "lodash";
 import { atom, computed } from "nanostores";
 import type { Profile } from "../types/Profile";
+import type { UserWhitelistRequest } from "../types/WhitelistRequest";
+
+export const allProfiles = atom<{ loading: boolean; data: Profile[] }>({ loading: true, data: [] });
+export const allWhitelistRequests = atom<{ loading: boolean; data: UserWhitelistRequest[] }>({ loading: true, data: [] });
 
 export const profiles = atom<{ loading: boolean; data: Profile[] }>({ loading: true, data: [] });
-export const allProfiles = atom<{ loading: boolean; data: Profile[] }>({ loading: true, data: [] });
+
 export const viewProfile = atom<Profile | undefined>(undefined);
+
+export const whitelistRequest = atom<{ loading: boolean; data: UserWhitelistRequest | undefined }>({ loading: true, data: undefined });
+
+export const hasWhitelistRequest = computed(whitelistRequest, ({ loading, data }) => !loading && !!data);
 
 export const isProfilesInitialized = computed(profiles, ({ loading, data }) => !loading && !!data?.length);
 export const isProfilesNotFound = computed(profiles, ({ loading, data }) => !loading && data?.length === 0);

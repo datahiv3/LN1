@@ -12,7 +12,14 @@ import {WithdrawableUpgradable} from "./WithdrawableUpgradable.sol";
 import {Registry} from "../Registry.sol";
 
 /// @custom:security-contact pierre@p10node.com
-contract SignatureVerification is Initializable, AccessControlUpgradeable, PausableUpgradeable, RegistryUpgradable, WithdrawableUpgradable, UUPSUpgradeable {
+contract SignatureVerification is
+    Initializable,
+    AccessControlUpgradeable,
+    PausableUpgradeable,
+    RegistryUpgradable,
+    WithdrawableUpgradable,
+    UUPSUpgradeable
+{
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
@@ -48,9 +55,15 @@ contract SignatureVerification is Initializable, AccessControlUpgradeable, Pausa
         _unpause();
     }
 
-    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {}
 
-    function _authorizeRegistry() internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
+    function _authorizeRegistry()
+        internal
+        override
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {}
 
     function setRegistry(address _registryAddress) internal override {
         registry = Registry(_registryAddress);
@@ -58,11 +71,15 @@ contract SignatureVerification is Initializable, AccessControlUpgradeable, Pausa
 
     function _authorizeWithdraw() internal override onlyRole(WITHDRAW_ROLE) {}
 
-    function setSignerAddress(address _signerAddress) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setSignerAddress(
+        address _signerAddress
+    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
         signerAddress = _signerAddress;
     }
 
-    function splitSignature(bytes memory sig) public pure returns (bytes32 r, bytes32 s, uint8 v) {
+    function splitSignature(
+        bytes memory sig
+    ) public pure returns (bytes32 r, bytes32 s, uint8 v) {
         require(sig.length == 65, "invalid signature length");
 
         assembly {
@@ -72,7 +89,10 @@ contract SignatureVerification is Initializable, AccessControlUpgradeable, Pausa
         }
     }
 
-    function verifySignature(bytes32 hashedMessage, bytes memory signature) public view returns (bool) {
+    function verifySignature(
+        bytes32 hashedMessage,
+        bytes memory signature
+    ) public view returns (bool) {
         (bytes32 r, bytes32 s, uint8 v) = splitSignature(signature);
 
         if (v != 27 && v != 28) {
@@ -84,14 +104,28 @@ contract SignatureVerification is Initializable, AccessControlUpgradeable, Pausa
         return signer == signerAddress;
     }
 
-    function verifyMessage(string memory message, bytes memory signature) public view returns (bool) {
-        bytes32 hashedMessage = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n", uintToString(bytes(message).length), message));
+    function verifyMessage(
+        string memory message,
+        bytes memory signature
+    ) public view returns (bool) {
+        bytes32 hashedMessage = keccak256(
+            abi.encodePacked(
+                "\x19Ethereum Signed Message:\n",
+                uintToString(bytes(message).length),
+                message
+            )
+        );
 
         return verifySignature(hashedMessage, signature);
     }
 
-    function verifyBytes(bytes32 message, bytes memory signature) public view whenNotPaused returns (bool) {
-        bytes32 hashedMessage = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", message));
+    function verifyBytes(
+        bytes32 message,
+        bytes memory signature
+    ) public view whenNotPaused returns (bool) {
+        bytes32 hashedMessage = keccak256(
+            abi.encodePacked("\x19Ethereum Signed Message:\n32", message)
+        );
 
         return verifySignature(hashedMessage, signature);
     }

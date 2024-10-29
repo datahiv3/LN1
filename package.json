@@ -16,9 +16,9 @@
   },
   "keywords": [],
   "devDependencies": {
-    "@biomejs/biome": "1.9.3",
-    "globals": "^15.10.0",
+    "@biomejs/biome": "1.9.4",
+    "globals": "^15.11.0",
     "lerna": "^8.1.8"
   },
-  "packageManager": "pnpm@9.12.0"
+  "packageManager": "pnpm@9.12.3"
 }

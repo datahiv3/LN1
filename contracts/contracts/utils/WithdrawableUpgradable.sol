@@ -14,7 +14,10 @@ abstract contract WithdrawableUpgradable is Initializable, ContextUpgradeable {
         __WithdrawableUpgradable_init_unchained();
     }
 
-    function __WithdrawableUpgradable_init_unchained() internal onlyInitializing {}
+    function __WithdrawableUpgradable_init_unchained()
+        internal
+        onlyInitializing
+    {}
 
     function _authorizeWithdraw() internal virtual;
 
@@ -25,7 +28,10 @@ abstract contract WithdrawableUpgradable is Initializable, ContextUpgradeable {
 
     function withdrawERC20(address _token) public virtual {
         _authorizeWithdraw();
-        IERC20(_token).transfer(msg.sender, IERC20(_token).balanceOf(address(this)));
+        IERC20(_token).transfer(
+            msg.sender,
+            IERC20(_token).balanceOf(address(this))
+        );
     }
 
     receive() external payable {}
