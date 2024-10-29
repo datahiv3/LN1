@@ -44,7 +44,10 @@ export const userWhitelistRequest = async (ctx: KoaContext) => {
 
     ln1_wl_request_bot.sendMessage(
       isDevelopment ? -1002286761074 : -4599568134,
-      `New whitelist request from ${ctx.evmAddress}.${data.additional ? ` Additional Information: ${data.additional || ""}. ` : ""} Approve here: http://${isStaging ? "https://staging-29c55d.datahive.p10node.com" : "https://ln1.datahive.p10node.com"}/admin/whitelisted`,
+      `
+      Env: ${isDevelopment ? "Development" : isStaging ? "Staging" : "Production"}.
+      New whitelist request from ${ctx.evmAddress}. ${data.additional ? ` Additional Information: ${data.additional || ""}. ` : ""}
+      Approve here: http://${isStaging ? "https://staging-29c55d.datahive.p10node.com" : "https://ln1.datahive.p10node.com"}/admin/whitelisted`,
     );
   }
 
