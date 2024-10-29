@@ -5,11 +5,11 @@ on:
     branches: [releases/**]
     paths:
       - "view/**"
-      - ".github/workflows/view.production.yml"
+      - ".github/workflows/production/view.yml"
   workflow_dispatch:
 
 env:
-  AWS_REGION: us-west-1
+  AWS_REGION: ap-south-1
 
 jobs:
   build:

@@ -72,3 +72,33 @@ deployer address: 0xB20E2539706BD724A1F17E85A2D2fE0Ff7359514
 │ registryGetStakingRewardsDistribution │ '0xeE0D60375Fe5B33d7B5785f3BF9BD7Db2f2322C4' │
 └───────────────────────────────────────┴──────────────────────────────────────────────┘
 ```
+
+
+## Production
+
+```bash
+deployer address: 0xB20E2539706BD724A1F17E85A2D2fE0Ff7359514
+┌────────────────────────────┬──────────────────────────────────────────────┐
+│ (index)                    │ Values                                       │
+├────────────────────────────┼──────────────────────────────────────────────┤
+│ token                      │ '0xf8BE3f58e65574F66968BA262C81798623B5589e' │
+│ registry                   │ '0x438E4Db78bB4334E436A3571e85b79EFF05AeE06' │
+│ sign                       │ '0x330093832a058452aB5f9141b77916274b587B1D' │
+│ faucet                     │ '0x845CdcCF86e8996876258941341a49aA76E822ac' │
+│ whitelisted                │ '0x9471FCf5e9dc973B78afd7484287A1091ee5B44F' │
+│ nodeFeeManager             │ '0x3ae098B54a2E1004FDF3A06bA401E136043b4A66' │
+│ nodeStaking                │ '0xE54779771Fe36a4bD7287Fa07603d31632f41574' │
+│ stakingRewardsDistribution │ '0x2f6e334fB8afC3E3DEC73b03B2DF22a284ACa3b0' │
+└────────────────────────────┴──────────────────────────────────────────────┘
+┌───────────────────────────────────────┬──────────────────────────────────────────────┐
+│ (index)                               │ Values                                       │
+├───────────────────────────────────────┼──────────────────────────────────────────────┤
+│ registryGetToken                      │ '0xf8BE3f58e65574F66968BA262C81798623B5589e' │
+│ registryGetSign                       │ '0x330093832a058452aB5f9141b77916274b587B1D' │
+│ registryGetFaucet                     │ '0x845CdcCF86e8996876258941341a49aA76E822ac' │
+│ registryGetWhitelisted                │ '0x9471FCf5e9dc973B78afd7484287A1091ee5B44F' │
+│ registryGetNodeFeeManager             │ '0x3ae098B54a2E1004FDF3A06bA401E136043b4A66' │
+│ registryGetNodeStaking                │ '0xE54779771Fe36a4bD7287Fa07603d31632f41574' │
+│ registryGetStakingRewardsDistribution │ '0x2f6e334fB8afC3E3DEC73b03B2DF22a284ACa3b0' │
+└───────────────────────────────────────┴──────────────────────────────────────────────┘
+```

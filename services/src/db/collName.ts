@@ -1,5 +1,6 @@
 import type { Db } from "mongodb";
 import { client } from ".";
+import { stage } from "../config";
 
 export const createDBCollName = (prefix: string, name: string) => {
   return `${prefix}__${name}`;
@@ -10,7 +11,7 @@ export class DbModel {
   public db: Db;
 
   public constructor(databaseName: string) {
-    this.databaseName = `datahive__${databaseName}`;
+    this.databaseName = `datahive__${databaseName}__${stage}`;
     this.db = client.db(this.databaseName);
   }
 

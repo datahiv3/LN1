@@ -11,7 +11,7 @@ export const isEnvProduction = isProduction || isStaging;
 
 export const subgraphs: { [key: string]: { whitelisted: string } } = {
   production: {
-    whitelisted: "",
+    whitelisted: "https://api.studio.thegraph.com/query/57647/ln1-production/v0.0.1",
   },
   staging: {
     whitelisted: "https://api.studio.thegraph.com/query/57647/ln1/v0.0.2",
@@ -46,14 +46,14 @@ export const stagingContracts: { [key: string]: `0x${string}` } = {
 };
 
 export const productionContracts: { [key: string]: `0x${string}` } = {
-  DataHiveToken: "0x",
-  SignatureVerification: "0x",
-  Registry: "0x",
-  TestnetFaucet: "0x",
-  Whitelisted: "0x",
-  NodeFeeManager: "0x",
-  NodeStaking: "0x",
-  StakingRewardsDistribution: "0x",
+  DataHiveToken: "0xf8BE3f58e65574F66968BA262C81798623B5589e",
+  SignatureVerification: "0x330093832a058452aB5f9141b77916274b587B1D",
+  Registry: "0x438E4Db78bB4334E436A3571e85b79EFF05AeE06",
+  TestnetFaucet: "0x845CdcCF86e8996876258941341a49aA76E822ac",
+  Whitelisted: "0x9471FCf5e9dc973B78afd7484287A1091ee5B44F",
+  NodeFeeManager: "0x3ae098B54a2E1004FDF3A06bA401E136043b4A66",
+  NodeStaking: "0xE54779771Fe36a4bD7287Fa07603d31632f41574",
+  StakingRewardsDistribution: "0x2f6e334fB8afC3E3DEC73b03B2DF22a284ACa3b0",
 };
 
 export const contracts = isProduction ? productionContracts : isStaging ? stagingContracts : devContracts;

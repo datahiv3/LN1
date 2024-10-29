@@ -16,3 +16,22 @@ spec:
                 name: ln1
                 port:
                   number: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: datahive-production
+  namespace: teol
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - host: api.datahive.p10node.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ln1-production
+                port:
+                  number: 3000
