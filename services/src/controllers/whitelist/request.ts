@@ -43,7 +43,7 @@ export const userWhitelistRequest = async (ctx: KoaContext) => {
     );
 
     ln1_wl_request_bot.sendMessage(
-      isDevelopment ? -1002286761074 : -4599568134,
+      isDevelopment ? -1002286761074 : -1002269649361,
       `
       Env: ${isDevelopment ? "Development" : isStaging ? "Staging" : "Production"}.
       New whitelist request from ${ctx.evmAddress}. ${data.additional ? ` Additional Information: ${data.additional || ""}. ` : ""}

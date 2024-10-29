@@ -1,4 +1,4 @@
-import { Button } from "@mantine/core";
+import { Button, Tooltip } from "@mantine/core";
 import { Card, Stack, Typography } from "@mui/joy";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import type React from "react";
@@ -55,9 +55,11 @@ const MyNodes: React.FC = () => {
       minWidth: 120,
       renderCell: () => {
         return (
-          <Button color="blue" variant="outline" size="xs" onClick={() => {}}>
-            Stake
-          </Button>
+          <Tooltip label="Coming Soon">
+            <Button color="blue" variant="outline" size="xs" onClick={() => {}}>
+              Stake
+            </Button>
+          </Tooltip>
         );
       },
     },
