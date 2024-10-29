@@ -2,7 +2,7 @@ import cors from "@koa/cors";
 import { isProduction, isStaging } from "../config";
 import logger from "../utils/log";
 
-const crosProductionDomains = ["https://datahive.p10node.com"];
+const crosProductionDomains = ["https://ln1.datahive.p10node.com"];
 const crosStagingDomains = ["https://*.datahive.p10node.com"];
 
 const isDev = !isProduction;
