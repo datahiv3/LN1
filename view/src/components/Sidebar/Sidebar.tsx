@@ -1,7 +1,7 @@
 import { Code, Group } from "@mantine/core";
 import { useStore } from "@nanostores/react";
 import { LinkSquare } from "@styled-icons/fluentui-system-regular";
-import { IconCirclePlus, IconKey, IconNetwork, IconSettings, IconTable } from "@tabler/icons-react";
+import { IconCirclePlus, IconKey, IconMoneybag, IconNetwork, IconSettings, IconTable } from "@tabler/icons-react";
 import type React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { isAdmin, isConnected } from "../../features/auth";
@@ -13,6 +13,7 @@ const data = [
   { link: "/profile", label: "Get Started", icon: IconKey },
   { link: "/create", label: "Create a New Nodes", icon: IconCirclePlus },
   { link: "/nodes", label: "My Nodes", icon: IconNetwork },
+  { link: "/staking", label: "My Staking", icon: IconMoneybag },
   { link: "/", label: "Nodes Explorer", icon: IconTable, direct: true },
   { link: "/admin", label: "Administrator", icon: IconSettings, isAdmin: true },
 ];

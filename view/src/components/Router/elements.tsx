@@ -18,6 +18,7 @@ export const LazyCreateProfile = create(lazy(() => import("../../screens/Profile
 export const LazyViewProfile = create(lazy(() => import("../../screens/Profile/View")));
 
 export const LazyMyNodes = create(lazy(() => import("../../screens/Nodes/MyNodes")));
+export const LazyMyStaking = create(lazy(() => import("../../screens/Nodes/MyStaking")));
 export const LazyNode = create(lazy(() => import("../../screens/Nodes/Node")));
 export const LazyCreate = create(lazy(() => import("../../screens/Nodes/Create")));
 

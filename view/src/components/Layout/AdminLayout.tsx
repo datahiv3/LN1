@@ -34,17 +34,9 @@ const AdminLayout: React.FC = () => {
             <Tab disableIndicator value="/admin">
               Overview
             </Tab>
-            <Tab disableIndicator value="/admin/whitelisted">
-              Whitelisted
-            </Tab>
+
             <Tab disableIndicator value="/admin/kyc">
               KYC
-            </Tab>
-            <Tab disableIndicator value="/admin/fee">
-              Node Fee
-            </Tab>
-            <Tab disableIndicator value="/admin/staking">
-              Node Staking
             </Tab>
           </TabList>
         </Tabs>

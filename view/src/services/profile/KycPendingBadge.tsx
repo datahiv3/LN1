@@ -27,6 +27,6 @@ export const getKycPendingColor = (kycStatus: KYCStatus) => {
     case "cancelled":
       return "gray";
     default:
-      return "gray";
+      return "yellow";
   }
 };

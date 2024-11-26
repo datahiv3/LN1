@@ -47,7 +47,7 @@ export const userWhitelistRequest = async (ctx: KoaContext) => {
       `
       Env: ${isDevelopment ? "Development" : isStaging ? "Staging" : "Production"}.
 New whitelist request from ${ctx.evmAddress}. ${data.additional ? ` Additional Information: ${data.additional || ""}. ` : ""}
-Approve here: ${isStaging ? "https://staging-29c55d.datahive.p10node.com" : "https://ln1.datahive.p10node.com"}/admin/whitelisted`,
+Approve here: ${isStaging ? "" : "https://ln1.datahive.network"}/admin/whitelisted`,
     );
   }
 

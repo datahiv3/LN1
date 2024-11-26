@@ -11,7 +11,6 @@ import {WithdrawableUpgradable} from "./utils/WithdrawableUpgradable.sol";
 import {Registry} from "./Registry.sol";
 import {SignatureVerification} from "./utils/SignatureVerification.sol";
 
-/// @custom:security-contact pierre@p10node.com
 contract TestnetFaucet is
     Initializable,
     AccessControlUpgradeable,
@@ -87,9 +86,9 @@ contract TestnetFaucet is
     }
 
     function faucet(address to) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        _faucet(to, 1);
+        _faucet(to, 1000);
 
-        emit Faucet(to, 1);
+        emit Faucet(to, 1000);
     }
 
     function proofFaucet(
@@ -102,13 +101,14 @@ contract TestnetFaucet is
 
         require(sign.verifyBytes(message, signature), "Invalid signature");
         require(!usedSignature[signature], "Signature already used");
+
         usedSignature[signature] = true;
+        uint256 faucetAmount = 1000;
 
-        totalFaucet[msg.sender] += 1;
+        _faucet(msg.sender, faucetAmount);
+        totalFaucet[msg.sender] += faucetAmount;
 
-        _faucet(msg.sender, 1);
-
-        emit Faucet(msg.sender, 1);
+        emit Faucet(msg.sender, faucetAmount);
     }
 
     modifier limitedTime() {

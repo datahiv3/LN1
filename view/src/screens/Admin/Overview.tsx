@@ -9,9 +9,6 @@ const Overview: React.FC = () => {
         <Card>
           <ul>
             <li>
-              <Link to="/admin/whitelisted">Whitelisted</Link>
-            </li>
-            <li>
               <Link to="/admin/kyc">KYC</Link>
             </li>
           </ul>

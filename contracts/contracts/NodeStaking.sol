@@ -10,7 +10,6 @@ import {RegistryUpgradable} from "./utils/RegistryUpgradable.sol";
 import {WithdrawableUpgradable} from "./utils/WithdrawableUpgradable.sol";
 import {Registry} from "./Registry.sol";
 
-/// @custom:security-contact pierre@p10node.com
 contract NodeStaking is
     Initializable,
     AccessControlUpgradeable,
@@ -26,17 +25,27 @@ contract NodeStaking is
 
     Registry public registry;
 
-    mapping(address => bool) public tokens;
-    mapping(address => mapping(address => uint256)) public stakedAmount;
+    address public tokenAddress;
+    IERC20 public token;
+
+    // total staked amount per node
+    mapping(uint256 => uint256) public stakedAmount;
+    // node id -> total staked amount
+
+    mapping(uint256 => mapping(address => uint256)) public stakedAmountPerUser;
+    // node id -> user -> staked amount
+
+    mapping(address => mapping(uint256 => uint256)) public userStakeNodeId;
+    // user -> index -> node id
+
+    mapping(address => mapping(uint256 => uint256))
+        public userStakeNodeIdAmount;
+    // user -> index -> amount
+
+    mapping(address => uint256) public userStakeIndex;
+    // user -> index
 
     event Stake(
-        uint256 indexed nodeId,
-        address indexed account,
-        address indexed token,
-        uint256 amount
-    );
-
-    event Unstake(
         uint256 indexed nodeId,
         address indexed account,
         address indexed token,
@@ -92,30 +101,33 @@ contract NodeStaking is
         withdrawERC20(registry.dataHiveTokenAddress());
     }
 
-    function addAllowToken(address token) public onlyRole(STAKING_ADMIN_ROLE) {
-        tokens[token] = true;
+    function setToken(address _token) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        tokenAddress = _token;
+        token = IERC20(_token);
     }
 
-    function removeAllowToken(
-        address token
-    ) public onlyRole(STAKING_ADMIN_ROLE) {
-        tokens[token] = false;
-    }
+    function stake(uint256 nodeId, uint256 tokenAmount) public whenNotPaused {
+        uint256 maxNodeId = registry.nodeFeeManager().nodeId();
 
-    function stake(
-        uint256 nodeId,
-        address tokenAddress,
-        uint256 tokenAmount
-    ) public whenNotPaused {
-        require(
-            nodeId <= registry.nodeFeeManager().nodeId(),
-            "NodeStaking: Node does not exist"
-        );
+        // check if node exists
+        require(nodeId <= maxNodeId, "NodeStaking: Node does not exist");
 
-        require(tokens[tokenAddress], "NodeStaking: Token not allowed");
+        (, uint256 fee, uint256 stakingFactor) = registry
+            .nodeFeeManager()
+            .getNodeData(nodeId);
 
         uint256 amount = IERC20(tokenAddress).balanceOf(msg.sender);
+
+        // check if user has enough balance
         require(amount >= tokenAmount, "NodeStaking: Insufficient balance");
+
+        uint256 maxStake = (fee * stakingFactor) / 100;
+
+        // check if staked amount exceeds max stake
+        require(
+            tokenAmount + stakedAmount[nodeId] <= maxStake,
+            "NodeStaking: Exceeds max stake"
+        );
 
         IERC20(tokenAddress).transferFrom(
             msg.sender,
@@ -123,7 +135,13 @@ contract NodeStaking is
             tokenAmount
         );
 
-        stakedAmount[msg.sender][tokenAddress] += tokenAmount;
+        stakedAmount[nodeId] += tokenAmount;
+        stakedAmountPerUser[nodeId][msg.sender] += tokenAmount;
+        userStakeNodeId[msg.sender][userStakeIndex[msg.sender]] = nodeId;
+        userStakeNodeIdAmount[msg.sender][
+            userStakeIndex[msg.sender]
+        ] = tokenAmount;
+        userStakeIndex[msg.sender] += 1;
 
         emit Stake(nodeId, msg.sender, tokenAddress, amount);
     }

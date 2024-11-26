@@ -1,6 +1,7 @@
 import { Button } from "@mantine/core";
-import { Card, DialogActions, DialogContent, DialogTitle, Divider, FormControl, FormHelperText, FormLabel, Input, Modal, ModalDialog, Stack, Typography } from "@mui/joy";
+import { Card, DialogActions, DialogContent, DialogTitle, Divider, FormControl, FormHelperText, FormLabel, Input, Modal, ModalDialog, Stack } from "@mui/joy";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { useStore } from "@nanostores/react";
 import { ethers } from "ethers";
 import lodash from "lodash";
 import type React from "react";
@@ -12,6 +13,7 @@ import { useAppDispatch } from "../../app/hooks";
 import DefaultPage from "../../components/Layout/DefaultPage";
 import { setToast } from "../../components/Toast/toastReducer";
 import { contracts } from "../../config";
+import { authStatus } from "../../features/auth";
 import { useKeyWithClickEvents } from "../../hooks/useKeyWithClickEvents";
 import DataHiveTokenABI from "../../services/eth/abi/DataHiveToken.json";
 import NodeFeeManagerABI from "../../services/eth/abi/NodeFeeManager.json";
@@ -22,8 +24,9 @@ export type Staking = {
   amount: string;
 };
 
-const MyNodes: React.FC = () => {
+const Nodes: React.FC = () => {
   const account = useAccount();
+  const $authStatus = useStore(authStatus);
   const dispatch = useAppDispatch();
   const [open, setOpen] = useState<boolean>(false);
   const [row, setRow] = useState<{ nodeId: number; maxStaking: number; stakedAmount: number }>();
@@ -35,37 +38,21 @@ const MyNodes: React.FC = () => {
   const { data: maxNodeIndex } = useReadContract({
     address: contracts.NodeFeeManager,
     abi: NodeFeeManagerABI,
-    functionName: "userMaxNodeIndex",
-    args: [account.address],
-  });
-
-  const nodeIds = new Array(Number(maxNodeIndex || 0))
-    .fill({ address: contracts.NodeFeeManager, abi: NodeFeeManagerABI as [], functionName: "nodeOwner", args: [0] })
-    .map((_, id) => ({
-      address: contracts.NodeFeeManager,
-      abi: NodeFeeManagerABI as [],
-      functionName: "userNodes",
-      args: [account.address, id],
-    }));
-
-  const { data: nodeIdsData } = useReadContracts({
-    contracts: nodeIds,
-    query: {
-      enabled: maxNodeIndex !== undefined && nodeIds.length > 0,
-    },
+    functionName: "nodeId",
+    args: [],
   });
 
   const { data: stakedAmounts, refetch } = useReadContracts({
-    contracts: nodeIds.map((item) => {
+    contracts: new Array(Number(maxNodeIndex || 0)).fill({ address: contracts.NodeStaking, abi: NodeStakingABI as [], functionName: "stakedAmount", args: [0] }).map((_, index) => {
       return {
         address: contracts.NodeStaking,
         abi: NodeStakingABI as [],
         functionName: "stakedAmount",
-        args: [item.args[1]],
+        args: [index],
       };
     }),
     query: {
-      enabled: maxNodeIndex !== undefined && nodeIds.length > 0,
+      enabled: maxNodeIndex !== undefined,
     },
   });
 
@@ -131,19 +118,21 @@ const MyNodes: React.FC = () => {
       sortable: false,
       minWidth: 120,
       renderCell: (params) => {
-        return (
-          <Button
-            color="blue"
-            variant="outline"
-            size="xs"
-            onClick={() => {
-              setOpen(true);
-              setRow(params.row as unknown as { nodeId: number; maxStaking: number; stakedAmount: number });
-            }}
-          >
-            Stake
-          </Button>
-        );
+        if (account.isConnected && $authStatus === "authenticated") {
+          return (
+            <Button
+              color="blue"
+              variant="outline"
+              size="xs"
+              onClick={() => {
+                setOpen(true);
+                setRow(params.row as unknown as { nodeId: number; maxStaking: number; stakedAmount: number });
+              }}
+            >
+              Stake
+            </Button>
+          );
+        }
       },
     },
   ];
@@ -156,8 +145,8 @@ const MyNodes: React.FC = () => {
     formState: { errors },
   } = useForm<Staking>({ defaultValues: {} });
 
-  const parsedNodeIdsData = nodeIdsData?.map((item, index) => {
-    const nodeId = Number(item?.result);
+  const parsedNodeIdsData = new Array(Number(maxNodeIndex || 0)).fill({ nodeId: 0 }).map((_, index) => {
+    const nodeId = index;
 
     let tier = 0;
     let allocation = 0;
@@ -183,6 +172,8 @@ const MyNodes: React.FC = () => {
       maxStaking: lodash.ceil(current.fee) * current.stakingFactor || 0,
     };
   });
+
+  console.log(maxNodeIndex, parsedNodeIdsData);
 
   const onSubmit: SubmitHandler<Staking> = async (data) => {
     writeContract(
@@ -215,7 +206,6 @@ const MyNodes: React.FC = () => {
                 );
 
                 setOpen(false);
-                reset();
 
                 setIsSuccess(true);
                 setLoading(false);
@@ -269,8 +259,6 @@ const MyNodes: React.FC = () => {
     <DefaultPage>
       <Stack spacing={2}>
         <Card>
-          <Typography level="title-lg">My Nodes</Typography>
-
           <div>
             <DataGrid
               rows={parsedNodeIdsData || []}
@@ -344,4 +332,4 @@ const MyNodes: React.FC = () => {
   );
 };
 
-export default MyNodes;
+export default Nodes;

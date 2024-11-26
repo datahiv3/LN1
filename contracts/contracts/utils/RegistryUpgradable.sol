@@ -6,7 +6,6 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/// @custom:security-contact pierre@p10node.com
 abstract contract RegistryUpgradable is Initializable, ContextUpgradeable {
     address public registryAddress;
 

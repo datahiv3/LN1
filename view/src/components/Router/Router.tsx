@@ -5,7 +5,7 @@ import RootLayout from "../Layout/RootLayout";
 import PublicOnly from "./PublicOnly";
 import RequireAdmin from "./RequireAdmin";
 import RequireAuth from "./RequireAuth";
-import RequireWhitelisted from "./RequireWhitelisted";
+// import RequireWhitelisted from "./RequireWhitelisted";
 import {
   LazyAdminFee,
   LazyAdminNodes,
@@ -19,6 +19,7 @@ import {
   LazyHome,
   LazyLogin,
   LazyMyNodes,
+  LazyMyStaking,
   LazyNode,
   LazyNotFound,
   LazyProfile,
@@ -41,17 +42,18 @@ const Router: React.FC = () => {
           <Route path="/" element={<RequireAuth />}>
             <Route path="/faucet" element={<LazyFaucet />} />
 
-            <Route path="/" element={<RequireWhitelisted />}>
-              <Route path="/profile" element={<ProfileLayout />}>
-                <Route path="/profile" element={<LazyProfile />} />
-                <Route path="/profile/create" element={<LazyCreateProfile />} />
-                <Route path="/profile/:id" element={<LazyViewProfile />} />
-              </Route>
-
-              <Route path="/nodes" element={<LazyMyNodes />} />
-              <Route path="/node" element={<LazyNode />} />
-              <Route path="/create" element={<LazyCreate />} />
+            {/* <Route path="/" element={<RequireWhitelisted />}> */}
+            <Route path="/profile" element={<ProfileLayout />}>
+              <Route path="/profile" element={<LazyProfile />} />
+              <Route path="/profile/create" element={<LazyCreateProfile />} />
+              <Route path="/profile/:id" element={<LazyViewProfile />} />
             </Route>
+
+            <Route path="/nodes" element={<LazyMyNodes />} />
+            <Route path="/staking" element={<LazyMyStaking />} />
+            <Route path="/node" element={<LazyNode />} />
+            <Route path="/create" element={<LazyCreate />} />
+            {/* </Route> */}
 
             {/* require admin */}
             <Route path="/admin" element={<RequireAdmin />}>

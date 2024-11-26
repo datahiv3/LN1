@@ -464,22 +464,12 @@
       },
       {
         "internalType": "address payable",
-        "name": "_whitelistedAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
         "name": "_nodeFeeManagerAddress",
         "type": "address"
       },
       {
         "internalType": "address payable",
         "name": "_nodeStakingAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
-        "name": "_stakingRewardsDistributionAddress",
         "type": "address"
       },
       {
@@ -558,33 +548,7 @@
         "type": "address"
       }
     ],
-    "name": "setStakingRewardsDistribution",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "_address",
-        "type": "address"
-      }
-    ],
     "name": "setTestnetFaucet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "_address",
-        "type": "address"
-      }
-    ],
-    "name": "setWhitelist",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -608,19 +572,6 @@
     "outputs": [
       {
         "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "stakingRewardsDistribution",
-    "outputs": [
-      {
-        "internalType": "contract StakingRewardsDistribution",
         "name": "",
         "type": "address"
       }
@@ -702,19 +653,6 @@
     "name": "upgradeToAndCall",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "whitelisted",
-    "outputs": [
-      {
-        "internalType": "contract Whitelisted",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -11,7 +11,6 @@ import {RegistryUpgradable} from "./RegistryUpgradable.sol";
 import {WithdrawableUpgradable} from "./WithdrawableUpgradable.sol";
 import {Registry} from "../Registry.sol";
 
-/// @custom:security-contact pierre@p10node.com
 contract SignatureVerification is
     Initializable,
     AccessControlUpgradeable,

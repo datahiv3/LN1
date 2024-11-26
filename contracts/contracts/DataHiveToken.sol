@@ -11,7 +11,6 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {WithdrawableUpgradable} from "./utils/WithdrawableUpgradable.sol";
 
-/// @custom:security-contact pierre@p10node.com
 contract DataHiveToken is
     Initializable,
     ERC20Upgradeable,

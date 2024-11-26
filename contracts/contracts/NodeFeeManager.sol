@@ -10,7 +10,6 @@ import {RegistryUpgradable} from "./utils/RegistryUpgradable.sol";
 import {WithdrawableUpgradable} from "./utils/WithdrawableUpgradable.sol";
 import {Registry} from "./Registry.sol";
 
-/// @custom:security-contact pierre@p10node.com
 contract NodeFeeManager is
     Initializable,
     AccessControlUpgradeable,
@@ -25,24 +24,26 @@ contract NodeFeeManager is
 
     Registry public registry;
 
-    // token -> bool
-    mapping(address => bool) public allowToken;
-    // token -> fee
-    mapping(address => uint256) public fee;
-
-    event AllowToken(address indexed token, bool allow);
-    event SetFee(address indexed token, uint256 fee);
+    address public tokenAddress;
+    IERC20 public token;
 
     mapping(uint256 => address) public nodeOwner;
     // node id -> owner
-    mapping(uint256 => bool) public nodeStatus;
-    // node id -> bool
-    mapping(uint256 => address) public paidBy;
-    // node id -> token
-    mapping(uint256 => mapping(address => uint256)) public paidAmount;
-    // node id -> token -> amount
+
+    mapping(address => uint256[]) public userNodes;
+
+    mapping(address => uint256) public userMaxNodeIndex;
 
     uint256 public nodeId;
+
+    struct Tier {
+        uint256 tier;
+        uint256 fee;
+        uint256 allocation;
+        uint256 stakingFactor;
+    }
+
+    mapping(uint256 => Tier) public tiers;
 
     event PaidFee(
         address indexed account,
@@ -76,6 +77,22 @@ contract NodeFeeManager is
         _grantRole(FEE_MANAGER_ROLE, msg.sender);
 
         _pause();
+
+        tiers[0] = Tier(1, 375 * 10 ** 18, 7000, 75);
+        tiers[1] = Tier(2, 849 * 10 ** 18, 6607, 91);
+        tiers[2] = Tier(3, 1322 * 10 ** 18, 6214, 107);
+        tiers[3] = Tier(4, 1795 * 10 ** 18, 5821, 123);
+        tiers[4] = Tier(5, 2268 * 10 ** 18, 5429, 139);
+        tiers[5] = Tier(6, 2742 * 10 ** 18, 5036, 155);
+        tiers[6] = Tier(7, 3215 * 10 ** 18, 4643, 171);
+        tiers[7] = Tier(8, 3688 * 10 ** 18, 4250, 188);
+        tiers[8] = Tier(9, 4161 * 10 ** 18, 3857, 204);
+        tiers[9] = Tier(10, 4634 * 10 ** 18, 3464, 220);
+        tiers[10] = Tier(11, 5108 * 10 ** 18, 3071, 236);
+        tiers[11] = Tier(12, 5581 * 10 ** 18, 2679, 252);
+        tiers[12] = Tier(13, 6054 * 10 ** 18, 2286, 268);
+        tiers[13] = Tier(14, 6527 * 10 ** 18, 1893, 284);
+        tiers[14] = Tier(15, 7000 * 10 ** 18, 1500, 300);
     }
 
     function pause() public onlyRole(PAUSER_ROLE) {
@@ -106,86 +123,85 @@ contract NodeFeeManager is
         withdrawERC20(registry.dataHiveTokenAddress());
     }
 
-    function setAllowToken(address _token) public onlyRole(FEE_MANAGER_ROLE) {
-        allowToken[_token] = true;
-
-        emit AllowToken(_token, true);
+    function setToken(address _token) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        tokenAddress = _token;
+        token = IERC20(_token);
     }
 
-    function removeToken(address _token) public onlyRole(FEE_MANAGER_ROLE) {
-        allowToken[_token] = false;
+    function getCurrentTier() public view returns (uint256) {
+        uint256 tier = 0;
+        uint256 allocation = 0;
 
-        emit AllowToken(_token, false);
+        for (uint256 i = 0; i < 15; i++) {
+            allocation += tiers[i].allocation;
+            if (nodeId < allocation) {
+                tier = tiers[i].tier;
+                break;
+            }
+        }
+
+        return tier;
     }
 
-    function setFee(
-        address _token,
-        uint256 _fee
-    ) public onlyRole(FEE_MANAGER_ROLE) {
-        require(allowToken[_token], "token not allowed");
-        fee[_token] = _fee;
+    function getFee() public view returns (uint256) {
+        uint256 fee = 7000;
+        uint256 allocation = 0;
 
-        emit AllowToken(_token, true);
-        emit SetFee(_token, _fee);
+        for (uint256 i = 0; i < 15; i++) {
+            allocation += tiers[i].allocation;
+            if (nodeId <= allocation) {
+                fee = tiers[i].fee;
+                break;
+            }
+        }
+
+        return fee;
     }
 
-    function removeFee(address _token) public onlyRole(FEE_MANAGER_ROLE) {
-        require(allowToken[_token], "token not allowed");
-        fee[_token] = 0;
+    function maxNodeId() public view returns (uint256) {
+        uint256 allocation = 0;
 
-        emit AllowToken(_token, false);
-        emit SetFee(_token, 0);
+        for (uint256 i = 0; i < 15; i++) {
+            allocation += tiers[i].allocation;
+        }
+        return allocation;
     }
 
-    function getFee(address _token) public view returns (uint256) {
-        return fee[_token];
-    }
+    function buyNode() public whenNotPaused {
+        uint256 totalNode = this.maxNodeId();
+        require(nodeId < totalNode, "NodeFeeManager: Node limit reached");
 
-    function payFee(address _token) public whenNotPaused {
         require(
-            registry.whitelisted().whitelist(msg.sender),
-            "account not whitelisted"
-        );
-
-        require(allowToken[_token], "token not allowed");
-
-        IERC20 token = IERC20(_token);
-
-        require(
-            token.allowance(msg.sender, address(this)) >= fee[_token],
+            token.allowance(msg.sender, address(this)) >= this.getFee(),
             "allowance not enough"
         );
-        token.transferFrom(msg.sender, address(this), fee[_token]);
+        token.transferFrom(msg.sender, address(this), this.getFee());
 
         nodeOwner[nodeId] = msg.sender;
-        nodeStatus[nodeId] = true;
-        paidBy[nodeId] = msg.sender;
-        paidAmount[nodeId][_token] = fee[_token];
+        userMaxNodeIndex[msg.sender] = userMaxNodeIndex[msg.sender] + 1;
+        userNodes[msg.sender].push(nodeId);
 
-        emit PaidFee(msg.sender, nodeId, _token, fee[_token]);
+        emit PaidFee(msg.sender, nodeId, tokenAddress, this.getFee());
 
         nodeId++;
     }
 
-    function refundFee(uint256 _nodeId) public onlyRole(FEE_MANAGER_ROLE) {
-        address _account = nodeOwner[_nodeId];
+    function getNodeData(
+        uint256 _nodeId
+    ) public view returns (uint256, uint256, uint256) {
+        uint256 tier = 0;
+        uint256 allocation = 0;
 
-        require(
-            registry.whitelisted().whitelist(_account),
-            "account not whitelisted"
-        );
-        require(_nodeId <= nodeId, "node not exist");
-        require(nodeOwner[_nodeId] == _account, "node not owned by account");
-        require(nodeStatus[_nodeId], "node refunded");
+        for (uint256 i = 0; i < 15; i++) {
+            allocation += tiers[i].allocation;
+            if (_nodeId < allocation) {
+                tier = tiers[i].tier;
+                break;
+            }
+        }
 
-        address tokenAddress = paidBy[_nodeId];
-        IERC20 token = IERC20(tokenAddress);
+        Tier memory currentTier = tiers[tier - 1];
 
-        uint256 refund = paidAmount[_nodeId][tokenAddress];
-        token.transfer(_account, refund);
-
-        nodeStatus[_nodeId] = false;
-
-        emit RefundFee(_account, _nodeId, tokenAddress, refund);
+        return (currentTier.tier, currentTier.fee, currentTier.stakingFactor);
     }
 }
